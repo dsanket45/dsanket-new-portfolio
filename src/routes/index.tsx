@@ -920,6 +920,10 @@ function Contact() {
               </a>
             </div>
           </div>
+
+          <div className="lg:col-span-12">
+            <ContactForm />
+          </div>
         </div>
       </div>
     </section>
