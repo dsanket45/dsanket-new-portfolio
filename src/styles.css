@@ -150,3 +150,23 @@
 @utility animate-blink {
   animation: blink 1.1s steps(1) infinite;
 }
+
+@utility input-bare {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 0.55rem 0;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--foreground);
+  outline: none;
+  transition: border-color 0.2s ease;
+  &::placeholder {
+    color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+  }
+  &:focus {
+    border-color: var(--ember);
+  }
+}
+

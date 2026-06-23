@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ContactForm } from "@/components/ContactForm";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -918,6 +919,10 @@ function Contact() {
                 <Instagram className="h-4 w-4" /> Instagram
               </a>
             </div>
+          </div>
+
+          <div className="lg:col-span-12">
+            <ContactForm />
           </div>
         </div>
       </div>
