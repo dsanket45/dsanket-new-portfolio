@@ -78,38 +78,8 @@ const SERVICES = [
   { n: "04", t: "Brand & Visuals", b: "Identity, typography, photo retouching — the visual layer for digital products.", tags: ["Identity", "Photo", "Type"] },
 ];
 
-const PROJECTS = [
-  { n: "01", title: "Sanket Musics", kind: "Progressive Web App", year: "2024",
-    blurb: "An ad-free, install-anywhere PWA for discovering and streaming music. Instant Google auth, unlimited playlists, smooth micro-interactions.",
-    tags: ["React", "Tailwind", "PWA", "Firebase"],
-    live: "https://dsmusics.netlify.app/", code: "https://github.com/dsanket45",
-    color: "from-ember/30 to-clay/20" },
-  { n: "02", title: "KodJobs — Job Portal", kind: "Full-stack platform", year: "2024",
-    blurb: "End-to-end job marketplace. Employer dashboards, candidate resumes, JWT auth, filtered search, application tracking.",
-    tags: ["Spring Boot", "React", "MySQL", "JWT"],
-    live: "#", code: "https://github.com/dsanket45",
-    color: "from-cobalt/25 to-moss/20" },
-  { n: "03", title: "LearnSphere", kind: "Online learning", year: "2024",
-    blurb: "An LMS with role-based access for admins, instructors and students. Video lessons, quizzes, certificates, progress tracking.",
-    tags: ["Spring Boot", "React", "WebRTC", "MySQL"],
-    live: "#", code: "https://github.com/dsanket45",
-    color: "from-moss/30 to-ember-soft/40" },
-  { n: "04", title: "FinTrack", kind: "Personal finance", year: "2023",
-    blurb: "Track expenses, plan budgets, generate reports. Interactive charts and exportable PDF/Excel summaries.",
-    tags: ["Spring Boot", "React", "Chart.js"],
-    live: "#", code: "https://github.com/dsanket45",
-    color: "from-clay/40 to-paper-deep" },
-  { n: "05", title: "MealMate", kind: "Food delivery", year: "2023",
-    blurb: "Order, cart and real-time delivery tracking with a restaurant admin dashboard.",
-    tags: ["Python", "JavaScript", "REST"],
-    live: "#", code: "https://github.com/dsanket45",
-    color: "from-ember/40 to-ember-soft/30" },
-  { n: "06", title: "Pneumonia Detection", kind: "Deep learning", year: "2023",
-    blurb: "CNN-based X-ray classifier with transfer learning, augmentation, and ROC-AUC evaluation.",
-    tags: ["Python", "TensorFlow", "Keras"],
-    live: "#", code: "https://github.com/dsanket45",
-    color: "from-cobalt/20 to-paper-deep" },
-];
+// Projects come from shared data so the index list and detail pages stay in sync.
+
 
 const JOURNEY = [
   { when: "Feb 2025 — present", role: "Full-Stack Developer", org: "Swajyot Technologies", city: "Bengaluru", tag: "Work",
