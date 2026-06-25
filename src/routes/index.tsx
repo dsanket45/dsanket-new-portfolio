@@ -1,8 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ContactForm } from "@/components/ContactForm";
 import { Cursor } from "@/components/Cursor";
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { PROJECTS as PROJECT_LIST, CATEGORIES, type Project } from "@/data/projects";
 import {
   ArrowUpRight,
   Mail,
