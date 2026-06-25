@@ -322,7 +322,7 @@ function Hero() {
               </div>
             </motion.div>
 
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.6 }}
@@ -330,7 +330,7 @@ function Hero() {
             >
               <p className="font-mono-label text-muted-foreground">currently</p>
               <p className="font-display text-lg">Swajyot Tech</p>
-            </motion.div>
+            </motion.div> */}
 
             <motion.div
               initial={{ opacity: 0, y: 10 }}
