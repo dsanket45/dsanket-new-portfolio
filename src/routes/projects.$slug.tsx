@@ -3,7 +3,7 @@ import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { useRef } from "react";
 import { ArrowLeft, ArrowUpRight, Check } from "lucide-react";
 import { Cursor } from "@/components/Cursor";
-import { PROJECTS, getProject } from "@/data/projects";
+import { PROJECTS, getProject, type Project } from "@/data/projects";
 
 export const Route = createFileRoute("/projects/$slug")({
   loader: ({ params }) => {
