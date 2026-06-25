@@ -1,8 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ContactForm } from "@/components/ContactForm";
 import { Cursor } from "@/components/Cursor";
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { PROJECTS as PROJECT_LIST, CATEGORIES, type Project } from "@/data/projects";
 import {
   ArrowUpRight,
   Mail,
@@ -77,38 +78,8 @@ const SERVICES = [
   { n: "04", t: "Brand & Visuals", b: "Identity, typography, photo retouching — the visual layer for digital products.", tags: ["Identity", "Photo", "Type"] },
 ];
 
-const PROJECTS = [
-  { n: "01", title: "Sanket Musics", kind: "Progressive Web App", year: "2024",
-    blurb: "An ad-free, install-anywhere PWA for discovering and streaming music. Instant Google auth, unlimited playlists, smooth micro-interactions.",
-    tags: ["React", "Tailwind", "PWA", "Firebase"],
-    live: "https://dsmusics.netlify.app/", code: "https://github.com/dsanket45",
-    color: "from-ember/30 to-clay/20" },
-  { n: "02", title: "KodJobs — Job Portal", kind: "Full-stack platform", year: "2024",
-    blurb: "End-to-end job marketplace. Employer dashboards, candidate resumes, JWT auth, filtered search, application tracking.",
-    tags: ["Spring Boot", "React", "MySQL", "JWT"],
-    live: "#", code: "https://github.com/dsanket45",
-    color: "from-cobalt/25 to-moss/20" },
-  { n: "03", title: "LearnSphere", kind: "Online learning", year: "2024",
-    blurb: "An LMS with role-based access for admins, instructors and students. Video lessons, quizzes, certificates, progress tracking.",
-    tags: ["Spring Boot", "React", "WebRTC", "MySQL"],
-    live: "#", code: "https://github.com/dsanket45",
-    color: "from-moss/30 to-ember-soft/40" },
-  { n: "04", title: "FinTrack", kind: "Personal finance", year: "2023",
-    blurb: "Track expenses, plan budgets, generate reports. Interactive charts and exportable PDF/Excel summaries.",
-    tags: ["Spring Boot", "React", "Chart.js"],
-    live: "#", code: "https://github.com/dsanket45",
-    color: "from-clay/40 to-paper-deep" },
-  { n: "05", title: "MealMate", kind: "Food delivery", year: "2023",
-    blurb: "Order, cart and real-time delivery tracking with a restaurant admin dashboard.",
-    tags: ["Python", "JavaScript", "REST"],
-    live: "#", code: "https://github.com/dsanket45",
-    color: "from-ember/40 to-ember-soft/30" },
-  { n: "06", title: "Pneumonia Detection", kind: "Deep learning", year: "2023",
-    blurb: "CNN-based X-ray classifier with transfer learning, augmentation, and ROC-AUC evaluation.",
-    tags: ["Python", "TensorFlow", "Keras"],
-    live: "#", code: "https://github.com/dsanket45",
-    color: "from-cobalt/20 to-paper-deep" },
-];
+// Projects come from shared data so the index list and detail pages stay in sync.
+
 
 const JOURNEY = [
   { when: "Feb 2025 — present", role: "Full-Stack Developer", org: "Swajyot Technologies", city: "Bengaluru", tag: "Work",
@@ -133,9 +104,15 @@ const NAV = [
 /* ---------- page ---------- */
 
 function Portfolio() {
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 22, mass: 0.4 });
   return (
     <div className="paper-grain min-h-screen bg-background text-foreground antialiased">
       <Cursor />
+      <motion.div
+        style={{ scaleX: progress, transformOrigin: "0% 50%" }}
+        className="fixed left-0 right-0 top-0 z-[60] h-[3px] bg-ember"
+      />
       <Nav />
       <main className="relative">
         <Hero />
@@ -571,6 +548,12 @@ function Gallery() {
 /* ---------- work ---------- */
 
 function Work() {
+  const [filter, setFilter] = useState<(typeof CATEGORIES)[number]["id"]>("all");
+  const filtered = useMemo(
+    () => (filter === "all" ? PROJECT_LIST : PROJECT_LIST.filter((p) => p.category === filter)),
+    [filter],
+  );
+
   return (
     <section id="work" className="relative py-28 lg:py-40">
       <div className="mx-auto max-w-[1480px] px-6 lg:px-12">
@@ -582,19 +565,58 @@ function Work() {
             </h2>
           </div>
           <p className="max-w-xs text-muted-foreground">
-            A small, honest list. Real users, real bugs, real deploys.
+            Ten projects, end-to-end. Click any line for the full story, stack, metrics and live links.
           </p>
         </div>
 
-        <ul className="mt-16 border-t border-border">
-          {PROJECTS.map((p, i) => <ProjectRow key={p.n} p={p} i={i} />)}
+        {/* category filter */}
+        <div className="mt-12 flex flex-wrap items-center gap-2">
+          {CATEGORIES.map((c) => {
+            const active = filter === c.id;
+            return (
+              <button
+                key={c.id}
+                onClick={() => setFilter(c.id)}
+                data-cursor="filter"
+                className={`group relative overflow-hidden rounded-full border px-4 py-2 text-sm transition-all ${
+                  active
+                    ? "border-foreground bg-foreground text-paper"
+                    : "border-border bg-card text-foreground/80 hover:border-ember/60 hover:text-foreground"
+                }`}
+              >
+                <span className="relative z-10">{c.label}</span>
+                <span className="font-mono-label relative z-10 ml-2 opacity-60">
+                  {c.id === "all" ? PROJECT_LIST.length : PROJECT_LIST.filter((p) => p.category === c.id).length}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <ul className="mt-10 border-t border-border">
+          {filtered.map((p, i) => (
+            <ProjectRow key={p.slug} p={p} i={i} />
+          ))}
         </ul>
+
+        <div className="mt-12 flex justify-center">
+          <a
+            href="https://github.com/dsanket45"
+            target="_blank"
+            rel="noreferrer"
+            data-cursor="github"
+            className="group inline-flex items-center gap-2 rounded-full border border-foreground px-6 py-3 text-sm transition-all hover:bg-foreground hover:text-paper"
+          >
+            More on GitHub
+            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </a>
+        </div>
       </div>
     </section>
   );
 }
 
-function ProjectRow({ p, i }: { p: (typeof PROJECTS)[number]; i: number; }) {
+function ProjectRow({ p, i }: { p: Project; i: number }) {
   const ref = useRef<HTMLLIElement>(null);
   const [pos, setPos] = useState({ x: 0, y: 0, on: false });
 
@@ -612,11 +634,10 @@ function ProjectRow({ p, i }: { p: (typeof PROJECTS)[number]; i: number; }) {
       }}
       onMouseLeave={() => setPos((s) => ({ ...s, on: false }))}
     >
-      <a
-        href={p.live}
-        target="_blank"
-        rel="noreferrer"
-        data-cursor="open"
+      <Link
+        to="/projects/$slug"
+        params={{ slug: p.slug }}
+        data-cursor="case study"
         className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-6 py-8 transition-colors sm:grid-cols-[60px_minmax(0,1fr)_auto_auto] sm:gap-10 sm:py-10"
       >
         <span className="font-mono-label text-muted-foreground">{p.n}</span>
@@ -635,26 +656,28 @@ function ProjectRow({ p, i }: { p: (typeof PROJECTS)[number]; i: number; }) {
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-border transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-ember group-hover:bg-ember group-hover:text-paper">
           <ArrowUpRight className="h-5 w-5" />
         </span>
-      </a>
+      </Link>
 
       <div className="flex flex-wrap gap-2 pb-6 sm:pl-[100px]">
-        {p.tags.map((t) => (
+        {p.tags.map((t: string) => (
           <span key={t} className="font-mono-label rounded-full border border-border bg-card px-3 py-1 text-muted-foreground">{t}</span>
         ))}
       </div>
 
-      {/* floating gradient card that follows cursor */}
+      {/* floating preview that follows cursor */}
       <motion.div
         animate={{ opacity: pos.on ? 1 : 0, scale: pos.on ? 1 : 0.85 }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         style={{ left: pos.x, top: pos.y, x: "-50%", y: "-50%" }}
-        className={`pointer-events-none absolute z-10 hidden h-56 w-72 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-border bg-gradient-to-br ${p.color} shadow-2xl lg:block`}
+        className={`pointer-events-none absolute z-10 hidden h-56 w-80 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-border shadow-2xl lg:block`}
       >
-        <div className="flex h-full flex-col justify-between p-5">
-          <span className="font-mono-label text-foreground/70">{p.n} · {p.year}</span>
+        <img src={p.cover} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <div className={`absolute inset-0 bg-gradient-to-br ${p.color} mix-blend-multiply`} />
+        <div className="relative flex h-full flex-col justify-between p-5 text-paper">
+          <span className="font-mono-label">{p.n} · {p.year}</span>
           <div>
-            <p className="font-display text-2xl text-foreground">{p.title}</p>
-            <p className="font-mono-label mt-1 text-foreground/60">{p.kind}</p>
+            <p className="font-display text-2xl drop-shadow">{p.title}</p>
+            <p className="font-mono-label mt-1 opacity-80">{p.kind}</p>
           </div>
         </div>
       </motion.div>
@@ -663,6 +686,7 @@ function ProjectRow({ p, i }: { p: (typeof PROJECTS)[number]; i: number; }) {
     </motion.li>
   );
 }
+
 
 /* ---------- craft / skills ---------- */
 
