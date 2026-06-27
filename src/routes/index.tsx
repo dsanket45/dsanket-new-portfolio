@@ -829,39 +829,168 @@ function Block({ title, body }: { title: string; body: string }) {
 /* ---------- journey ---------- */
 
 function Journey() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  // Line draws as you enter; eases out at the end
+  const lineScale = useTransform(scrollYProgress, [0.05, 0.85], [0, 1]);
+  const lineSpring = useSpring(lineScale, { stiffness: 120, damping: 30, mass: 0.4 });
+
+  // Active index based on scroll for the pinned big year
+  const [active, setActive] = useState(0);
+  const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            const idx = Number((e.target as HTMLElement).dataset.idx);
+            setActive(idx);
+          }
+        });
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+    );
+    itemRefs.current.forEach((el) => el && obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
+  const activeYear = useMemo(() => {
+    const m = JOURNEY[active]?.when.match(/\d{4}/);
+    return m ? m[0] : "";
+  }, [active]);
+
   return (
-    <section id="journey" className="relative bg-card py-28 lg:py-40">
+    <section
+      id="journey"
+      ref={sectionRef}
+      className="relative overflow-hidden bg-card py-28 lg:py-40"
+    >
+      {/* subtle grain wash */}
+      <div className="pointer-events-none absolute inset-0 paper-grain opacity-40" />
+
       <div className="mx-auto max-w-[1480px] px-6 lg:px-12">
         <SectionLabel n="05" title="journey" />
         <h2 className="mt-8 max-w-3xl font-display text-5xl leading-[1.05] sm:text-6xl lg:text-7xl">
           A short path, <em className="italic text-ember">walked carefully.</em>
         </h2>
 
-        <ol className="mt-16 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-x-16">
-          {JOURNEY.map((j, i) => (
-            <motion.li
-              key={j.role + i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: i * 0.07 }}
-              className="relative border-l border-border pl-6"
-            >
-              <span className="absolute left-0 top-2 -translate-x-1/2 h-3 w-3 rounded-full bg-ember ring-4 ring-card" />
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="font-mono-label text-ember">{j.tag}</span>
-                <span className="font-mono-label text-muted-foreground">{j.when}</span>
+        <div className="mt-20 grid grid-cols-1 gap-10 lg:grid-cols-12">
+          {/* sticky year pillar */}
+          <aside className="hidden lg:col-span-4 lg:block">
+            <div className="sticky top-28">
+              <p className="font-mono-label text-muted-foreground">currently</p>
+              <div className="relative mt-3 h-[220px] overflow-hidden">
+                {JOURNEY.map((j, i) => {
+                  const year = j.when.match(/\d{4}/)?.[0] ?? "";
+                  return (
+                    <motion.div
+                      key={year + i}
+                      className="absolute inset-0 flex items-start"
+                      initial={false}
+                      animate={{
+                        y: (i - active) * 40 + "%",
+                        opacity: i === active ? 1 : 0.08,
+                        scale: i === active ? 1 : 0.85,
+                        filter: i === active ? "blur(0px)" : "blur(2px)",
+                      }}
+                      transition={{ type: "spring", stiffness: 110, damping: 22 }}
+                    >
+                      <span className="font-display text-[10rem] leading-none tracking-tight">
+                        {year}
+                      </span>
+                    </motion.div>
+                  );
+                })}
               </div>
-              <h3 className="mt-3 font-display text-2xl sm:text-3xl">{j.role}</h3>
-              <p className="mt-1 text-muted-foreground">{j.org} · {j.city}</p>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground">{j.notes}</p>
-            </motion.li>
-          ))}
-        </ol>
+              <motion.p
+                key={activeYear + active}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="mt-6 max-w-xs text-base text-muted-foreground"
+              >
+                {JOURNEY[active]?.org} — <span className="text-foreground">{JOURNEY[active]?.role}</span>
+              </motion.p>
+              <div className="mt-8 flex items-center gap-3">
+                <span className="font-mono-label text-ember">{active + 1} / {JOURNEY.length}</span>
+                <span className="h-px flex-1 bg-border" />
+              </div>
+            </div>
+          </aside>
+
+          {/* timeline */}
+          <div className="relative lg:col-span-8">
+            {/* the rail */}
+            <div className="pointer-events-none absolute left-[11px] top-0 bottom-0 w-px bg-border lg:left-3" />
+            <motion.div
+              style={{ scaleY: lineSpring, transformOrigin: "top" }}
+              className="pointer-events-none absolute left-[11px] top-0 bottom-0 w-px bg-gradient-to-b from-ember via-ember/70 to-transparent lg:left-3"
+            />
+
+            <ol className="space-y-14">
+              {JOURNEY.map((j, i) => (
+                <motion.li
+                  key={j.role + i}
+                  ref={(el) => { itemRefs.current[i] = el; }}
+                  data-idx={i}
+                  initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
+                  whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -20, filter: "blur(6px)" }}
+                  viewport={{ margin: "-15% 0px -15% 0px" }}
+                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  className="relative pl-12"
+                >
+                  {/* node */}
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: false, margin: "-40% 0px -40% 0px" }}
+                    transition={{ type: "spring", stiffness: 260, damping: 18 }}
+                    className="absolute left-0 top-3 grid h-6 w-6 place-items-center rounded-full bg-card ring-1 ring-border"
+                  >
+                    <motion.span
+                      animate={active === i ? { scale: [1, 1.5, 1] } : { scale: 1 }}
+                      transition={{ duration: 1.6, repeat: active === i ? Infinity : 0, ease: "easeInOut" }}
+                      className={`h-2.5 w-2.5 rounded-full ${active === i ? "bg-ember shadow-[0_0_0_6px_rgba(234,88,12,0.12)]" : "bg-foreground/40"}`}
+                    />
+                  </motion.span>
+
+                  <div className="group rounded-2xl border border-border bg-paper/40 p-6 transition-all hover:-translate-y-1 hover:border-ember/40 hover:bg-paper hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.25)] sm:p-7">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-ember/10 px-3 py-1 font-mono-label text-ember">
+                        {j.tag}
+                      </span>
+                      <span className="font-mono-label text-muted-foreground">
+                        {j.when}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-4 font-display text-3xl leading-tight sm:text-4xl">
+                      {j.role}
+                    </h3>
+                    <p className="mt-1 text-muted-foreground">
+                      {j.org} <span className="text-ember">·</span> {j.city}
+                    </p>
+
+                    <div className="mt-5 h-px w-12 bg-ember/60 transition-all duration-500 group-hover:w-24" />
+
+                    <p className="mt-5 text-base leading-relaxed text-muted-foreground">
+                      {j.notes}
+                    </p>
+                  </div>
+                </motion.li>
+              ))}
+            </ol>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
+
 
 /* ---------- contact ---------- */
 
