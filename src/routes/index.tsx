@@ -674,11 +674,16 @@ function ProjectRow({ p, i }: { p: Project; i: number }) {
           <p className="mt-2 text-sm text-muted-foreground">{p.kind} · {p.year}</p>
         </div>
 
+        {/* mobile thumbnail */}
+        <div className="col-span-3 -mr-2 aspect-[4/3] w-24 shrink-0 overflow-hidden rounded-xl border border-border sm:hidden">
+          <img src={p.cover} alt="" loading="lazy" className="h-full w-full object-cover" />
+        </div>
+
         <div className="hidden max-w-md text-sm leading-relaxed text-muted-foreground lg:block">
           {p.blurb}
         </div>
 
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-border transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-ember group-hover:bg-ember group-hover:text-paper">
+        <span className="hidden sm:grid h-12 w-12 shrink-0 place-items-center rounded-full border border-border transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:border-ember group-hover:bg-ember group-hover:text-paper">
           <ArrowUpRight className="h-5 w-5" />
         </span>
       </Link>
