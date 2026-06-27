@@ -1040,7 +1040,115 @@ function FooterCol({ title, items, external }: { title: string; items: readonly 
   );
 }
 
+
+/* ---------- manifesto ---------- */
+
+function Manifesto() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const x = useTransform(scrollYProgress, [0, 1], [-80, 80]);
+  return (
+    <section ref={ref} className="relative overflow-hidden py-24 lg:py-32">
+      <div className="mx-auto max-w-[1480px] px-6 lg:px-12">
+        <SectionLabel n="—" title="the motive" />
+        <motion.p
+          style={{ x }}
+          className="mt-10 font-display text-[clamp(2rem,5.4vw,4.8rem)] leading-[1.05] tracking-tight"
+        >
+          I don't ship features. I ship <em className="italic text-ember">feelings</em> —
+          the quiet click of a button that lands, the page that loads before you blink,
+          the empty state that says <em className="italic">"we got you."</em>
+        </motion.p>
+        <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
+          <span className="font-mono-label">— a working manifesto</span>
+          <span className="h-px flex-1 min-w-12 bg-border" />
+          <span className="font-mono-label">v.2026</span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- principles ---------- */
+
+const PRINCIPLES = [
+  { k: "P/01", t: "Taste compounds.", b: "Every spacing, easing curve and copy line is a vote for the kind of product this becomes. Small votes, loud results." },
+  { k: "P/02", t: "Performance is design.", b: "Snappy is a feeling. Sub-second interactions, lean bundles, native scroll — they're the substrate everything else sits on." },
+  { k: "P/03", t: "Ship the boring 99%.", b: "Loading states, empty states, error states, offline states. The polish nobody mentions is the polish everyone feels." },
+  { k: "P/04", t: "Write less, mean more.", b: "Microcopy is UI. Three honest words beat a paragraph of marketing every time." },
+  { k: "P/05", t: "Build for tomorrow's you.", b: "Boring tech where it counts, fresh tech where it sings. Code somebody else (or future-you) can actually finish." },
+  { k: "P/06", t: "Make the demo, then the deck.", b: "Working software earns trust faster than any slide. Prototype in days, decide on Monday." },
+];
+
+function Principles() {
+  return (
+    <section className="relative bg-card py-28 lg:py-36">
+      <div className="mx-auto max-w-[1480px] px-6 lg:px-12">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <SectionLabel n="—" title="principles" />
+            <h2 className="mt-8 max-w-3xl font-display text-5xl leading-[1.05] sm:text-6xl lg:text-7xl">
+              Six rules I <em className="italic text-ember">actually</em> follow.
+            </h2>
+          </div>
+          <p className="max-w-xs text-muted-foreground">
+            Not a brand. A working philosophy — the things I keep saying out loud on calls.
+          </p>
+        </div>
+
+        <ul className="mt-16 grid grid-cols-1 gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+          {PRINCIPLES.map((p, i) => (
+            <motion.li
+              key={p.k}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, delay: (i % 3) * 0.08 }}
+              className="group relative bg-card p-8 transition-colors hover:bg-background lg:p-10"
+            >
+              <span className="font-mono-label text-ember">{p.k}</span>
+              <h3 className="mt-5 font-display text-3xl leading-[1.1] transition-colors group-hover:text-ember">{p.t}</h3>
+              <p className="mt-4 text-muted-foreground">{p.b}</p>
+              <span className="pointer-events-none absolute bottom-6 right-6 font-display text-5xl text-foreground/5 transition-all duration-500 group-hover:text-ember/20 group-hover:-translate-y-1">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+            </motion.li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- quotes / recognition ---------- */
+
+const QUOTE_LINES = [
+  "“Calm interfaces, loud impact.”",
+  "Bengaluru → World",
+  "Design × Engineering",
+  "Built with care, shipped on time.",
+  "Available · Q1 2026",
+  "10+ projects, one quality bar",
+  "React · Spring Boot · Figma",
+];
+
+function Quotes() {
+  return (
+    <section className="relative overflow-hidden border-y border-border bg-ember/[0.08] py-14">
+      <div className="flex whitespace-nowrap animate-marquee-slow">
+        {[...QUOTE_LINES, ...QUOTE_LINES, ...QUOTE_LINES].map((q, i) => (
+          <span key={i} className="mx-10 inline-flex items-center gap-10 font-display text-3xl text-foreground/80 md:text-4xl">
+            <span>{q}</span>
+            <span className="text-ember">✦</span>
+          </span>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 /* ---------- shared ---------- */
+
 
 function SectionLabel({ n, title }: { n: string; title: string }) {
   return (
