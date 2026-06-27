@@ -675,8 +675,8 @@ function ProjectRow({ p, i }: { p: Project; i: number }) {
         </div>
 
         {/* mobile thumbnail */}
-        <div className="col-span-3 -mr-2 aspect-[4/3] w-24 shrink-0 overflow-hidden rounded-xl border border-border sm:hidden">
-          <img src={p.cover} alt="" loading="lazy" className="h-full w-full object-cover" />
+        <div className="aspect-[4/3] w-24 shrink-0 overflow-hidden rounded-xl border border-border sm:hidden">
+          <img src={p.cover} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
         </div>
 
         <div className="hidden max-w-md text-sm leading-relaxed text-muted-foreground lg:block">
