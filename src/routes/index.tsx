@@ -117,9 +117,12 @@ function Portfolio() {
       <main className="relative">
         <Hero />
         <Marquee />
+        <Manifesto />
         <Services />
+        <Principles />
         <Gallery />
         <Work />
+        <Quotes />
         <Craft />
         <About />
         <Journey />
@@ -373,9 +376,31 @@ function Hero() {
 }
 
 function Stat({ n, l }: { n: string; l: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const [val, setVal] = useState("0");
+  useEffect(() => {
+    const target = parseFloat(n);
+    if (Number.isNaN(target)) { setVal(n); return; }
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      const dur = 1400; const start = performance.now();
+      const suffix = n.replace(/[\d.]/g, "");
+      const tick = (t: number) => {
+        const p = Math.min(1, (t - start) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const cur = (target * eased);
+        setVal((Number.isInteger(target) ? Math.round(cur) : cur.toFixed(1)) + suffix);
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      io.disconnect();
+    }, { threshold: 0.4 });
+    if (ref.current) io.observe(ref.current);
+    return () => io.disconnect();
+  }, [n]);
   return (
     <div>
-      <p className="font-display text-3xl text-foreground sm:text-4xl">{n}</p>
+      <p ref={ref} className="font-display text-3xl text-foreground sm:text-4xl tabular-nums">{val}</p>
       <p className="font-mono-label mt-1 text-muted-foreground">{l}</p>
     </div>
   );
