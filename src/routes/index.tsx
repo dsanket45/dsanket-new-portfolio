@@ -85,15 +85,86 @@ const SERVICES = [
 // Projects come from shared data so the index list and detail pages stay in sync.
 
 
-const JOURNEY = [
-  { when: "Feb 2025 — present", role: "Full-Stack Developer", org: "Swajyot Technologies", city: "Bengaluru", tag: "Work",
-    notes: "Shipping responsive React + Spring Boot applications. Owning UI/UX details, API design and cloud deployment." },
-  { when: "Oct — Nov 2023", role: "Innovation & Entrepreneurship Intern", org: "Novel Sky Technologies", city: "Bengaluru", tag: "Internship",
-    notes: "Product thinking, design innovation and the entrepreneurial mindset behind building real IT products." },
-  { when: "2021 — 2025", role: "BE, Computer Science & Engineering", org: "VTU University", city: "Bengaluru", tag: "Education",
-    notes: "Strong fundamentals in programming, algorithms, systems and modern software engineering." },
-  { when: "2019 — 2021", role: "Pre-University — Science", org: "Shree Guru Vidya Peetha", city: "Gulbarga", tag: "Education",
-    notes: "Physics, Chemistry, Mathematics." },
+const JOURNEY: Array<{
+  when: string;
+  year: string;
+  role: string;
+  org: string;
+  city: string;
+  tag: string;
+  notes: string;
+  image: string;
+  highlights: string[];
+  stack: string[];
+}> = [
+  {
+    when: "Feb 2025 — present",
+    year: "2025",
+    role: "Full-Stack Developer",
+    org: "Swajyot Technologies",
+    city: "Bengaluru",
+    tag: "Work",
+    notes:
+      "Shipping responsive React + Spring Boot applications. Owning UI/UX details, API design and cloud deployment.",
+    image: jBengaluru.url,
+    highlights: [
+      "Led the redesign of internal tools — 40% faster task completion",
+      "Designed REST APIs powering 6+ production modules",
+      "Set up CI/CD and shaved 50% off deploy time",
+    ],
+    stack: ["React", "Spring Boot", "MySQL", "Docker"],
+  },
+  {
+    when: "Oct — Nov 2023",
+    year: "2023",
+    role: "Innovation & Entrepreneurship Intern",
+    org: "Novel Sky Technologies",
+    city: "Bengaluru",
+    tag: "Internship",
+    notes:
+      "Product thinking, design innovation and the entrepreneurial mindset behind building real IT products.",
+    image: jSketch.url,
+    highlights: [
+      "Built rapid product concepts end-to-end in a week",
+      "Pitched 2 prototypes to mentors and senior engineers",
+      "Learned how real teams ship under real constraints",
+    ],
+    stack: ["Product", "Design", "Prototyping"],
+  },
+  {
+    when: "2021 — 2025",
+    year: "2021",
+    role: "BE, Computer Science & Engineering",
+    org: "VTU University",
+    city: "Bengaluru",
+    tag: "Education",
+    notes:
+      "Strong fundamentals in programming, algorithms, systems and modern software engineering.",
+    image: jWorkspace.url,
+    highlights: [
+      "Built 10+ academic & personal projects — web, ML, systems",
+      "Specialised in full-stack engineering and human-centred design",
+      "Graduated with a strong portfolio of shipped work",
+    ],
+    stack: ["Java", "Python", "DSA", "DBMS"],
+  },
+  {
+    when: "2019 — 2021",
+    year: "2019",
+    role: "Pre-University — Science",
+    org: "Shree Guru Vidya Peetha",
+    city: "Gulbarga",
+    tag: "Education",
+    notes:
+      "Physics, Chemistry, Mathematics — the quiet years that built the discipline behind the craft.",
+    image: jCollege.url,
+    highlights: [
+      "Built the maths and physics foundation that engineering rests on",
+      "Discovered programming through after-school tinkering",
+      "Decided computing was the path forward",
+    ],
+    stack: ["PCM", "Foundations"],
+  },
 ];
 
 const NAV = [
