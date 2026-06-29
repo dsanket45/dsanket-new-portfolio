@@ -16,6 +16,10 @@ import mainPhoto from "@/assets/sanket-main.jpg.asset.json";
 import aboutPhoto from "@/assets/sanket-about.jpg.asset.json";
 import shot1 from "@/assets/sanket-shot1.jpg.asset.json";
 import shot3 from "@/assets/sanket-shot3.jpg.asset.json";
+import jWorkspace from "@/assets/journey-workspace.jpg.asset.json";
+import jSketch from "@/assets/journey-sketch.jpg.asset.json";
+import jCollege from "@/assets/journey-college.jpg.asset.json";
+import jBengaluru from "@/assets/journey-bengaluru.jpg.asset.json";
 
 const Github = (p: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...p}>
