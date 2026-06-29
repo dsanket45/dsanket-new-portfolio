@@ -1,12 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 
+/**
+ * Minimal, professional cursor.
+ * - tiny solid dot tracks the pointer 1:1
+ * - thin outline ring follows with subtle inertia
+ * - ring gently scales up on interactive elements (no labels, no clutter)
+ * - hidden on touch devices and respects reduced motion
+ */
 export function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState(false);
-  const [label, setLabel] = useState<string | null>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     if (window.matchMedia("(pointer: coarse)").matches) return;
     document.body.classList.add("has-cursor");
 
@@ -25,8 +32,8 @@ export function Cursor() {
     };
 
     const tick = () => {
-      rx += (x - rx) * 0.18;
-      ry += (y - ry) * 0.18;
+      rx += (x - rx) * 0.22;
+      ry += (y - ry) * 0.22;
       if (ringRef.current) {
         ringRef.current.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
       }
@@ -34,21 +41,16 @@ export function Cursor() {
     };
     raf = requestAnimationFrame(tick);
 
-    const onOver = (e: MouseEvent) => {
-      const t = (e.target as HTMLElement)?.closest<HTMLElement>(
-        "a, button, [data-cursor]"
+    const isInteractive = (el: EventTarget | null) =>
+      !!(el as HTMLElement | null)?.closest?.(
+        "a, button, [role='button'], input, textarea, select, [data-cursor]"
       );
-      if (t) {
-        setHover(true);
-        setLabel(t.getAttribute("data-cursor"));
-      }
+
+    const onOver = (e: MouseEvent) => {
+      if (isInteractive(e.target)) setHover(true);
     };
     const onOut = (e: MouseEvent) => {
-      const t = (e.target as HTMLElement)?.closest("a, button, [data-cursor]");
-      if (t) {
-        setHover(false);
-        setLabel(null);
-      }
+      if (isInteractive(e.target)) setHover(false);
     };
 
     window.addEventListener("mousemove", onMove, { passive: true });
@@ -67,23 +69,14 @@ export function Cursor() {
     <>
       <div
         ref={dotRef}
-        className="pointer-events-none fixed left-0 top-0 z-[100] h-2 w-2 rounded-full bg-ember mix-blend-multiply"
-        style={{ transition: "width .25s, height .25s" }}
+        className="pointer-events-none fixed left-0 top-0 z-[100] h-[5px] w-[5px] rounded-full bg-foreground"
       />
       <div
         ref={ringRef}
-        className={`pointer-events-none fixed left-0 top-0 z-[100] grid place-items-center rounded-full border border-foreground/50 transition-[width,height,background-color,color] duration-300 ${
-          hover
-            ? "h-16 w-16 bg-foreground text-paper border-foreground"
-            : "h-9 w-9"
+        className={`pointer-events-none fixed left-0 top-0 z-[100] rounded-full border border-foreground/40 transition-[width,height,border-color,background-color] duration-300 ease-out ${
+          hover ? "h-10 w-10 border-ember/70 bg-ember/5" : "h-7 w-7"
         }`}
-      >
-        {label && (
-          <span className="font-mono-label text-[10px] whitespace-nowrap">
-            {label}
-          </span>
-        )}
-      </div>
+      />
     </>
   );
 }
