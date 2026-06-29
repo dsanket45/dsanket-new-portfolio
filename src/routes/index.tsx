@@ -612,9 +612,20 @@ function ServiceCard({ s, i }: { s: (typeof SERVICES)[number]; i: number }) {
 function Gallery() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y1 = useTransform(scrollYProgress, [0, 1], [60, -60]);
+  const y1 = useTransform(scrollYProgress, [0, 1], [80, -80]);
   const y2 = useTransform(scrollYProgress, [0, 1], [-40, 40]);
-  const y3 = useTransform(scrollYProgress, [0, 1], [80, -80]);
+  const y3 = useTransform(scrollYProgress, [0, 1], [100, -100]);
+  const y4 = useTransform(scrollYProgress, [0, 1], [-60, 60]);
+  const y5 = useTransform(scrollYProgress, [0, 1], [60, -60]);
+
+  const frames = [
+    { src: shot1.url, label: "portrait · 2024", caption: "Light is a co-author." },
+    { src: jWorkspace.url, label: "studio · 2025", caption: "Where the work happens." },
+    { src: aboutPhoto.url, label: "off-camera · 2024", caption: "Between the deadlines." },
+    { src: jSketch.url, label: "process · 2024", caption: "Always sketching first." },
+    { src: shot3.url, label: "frame · 2023", caption: "An eye for composition." },
+  ];
+  const ys = [y1, y2, y3, y4, y5];
 
   return (
     <section ref={ref} className="relative overflow-hidden bg-card py-28 lg:py-40">
@@ -630,20 +641,39 @@ function Gallery() {
         </div>
 
         <div className="mt-16 grid grid-cols-12 gap-4 md:gap-6">
-          <motion.div style={{ y: y1 }} className="col-span-7 md:col-span-4 aspect-[3/4] overflow-hidden rounded-[20px] border border-border">
-            <img src={shot1.url} alt="Sanket" className="h-full w-full object-cover transition-transform duration-[1200ms] hover:scale-105" loading="lazy" />
-          </motion.div>
-          <motion.div style={{ y: y2 }} className="col-span-5 md:col-span-4 aspect-[3/4] overflow-hidden rounded-[20px] border border-border mt-12">
-            <img src={aboutPhoto.url} alt="Sanket" className="h-full w-full object-cover transition-transform duration-[1200ms] hover:scale-105" loading="lazy" />
-          </motion.div>
-          <motion.div style={{ y: y3 }} className="col-span-12 md:col-span-4 aspect-[3/4] overflow-hidden rounded-[20px] border border-border md:mt-24">
-            <img src={shot3.url} alt="Sanket" className="h-full w-full object-cover transition-transform duration-[1200ms] hover:scale-105" loading="lazy" />
-          </motion.div>
+          {frames.map((f, i) => {
+            const layouts = [
+              "col-span-7 md:col-span-5 aspect-[3/4]",
+              "col-span-5 md:col-span-4 aspect-[3/4] mt-16",
+              "col-span-12 md:col-span-3 aspect-[3/4] md:mt-32",
+              "col-span-6 md:col-span-4 aspect-[4/3] md:col-start-2",
+              "col-span-6 md:col-span-5 aspect-[4/3] md:mt-12",
+            ];
+            return (
+              <motion.figure
+                key={f.label}
+                style={{ y: ys[i] }}
+                className={`group relative overflow-hidden rounded-[20px] border border-border bg-paper ${layouts[i]}`}
+              >
+                <img
+                  src={f.src}
+                  alt={f.caption}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-105"
+                />
+                <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-foreground/70 via-foreground/10 to-transparent p-4 text-paper opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                  <span className="font-mono-label text-paper/85">{f.label}</span>
+                  <span className="text-sm">{f.caption}</span>
+                </figcaption>
+              </motion.figure>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
+
 
 /* ---------- work ---------- */
 
