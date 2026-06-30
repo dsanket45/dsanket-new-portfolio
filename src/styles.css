@@ -232,3 +232,48 @@
     background: radial-gradient(ellipse at center, transparent 55%, rgba(40, 25, 10, 0.18));
   }
 }
+
+/* grid overlay for editorial / IDE-like images */
+@utility grid-overlay {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, rgba(245, 240, 230, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(245, 240, 230, 0.06) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mix-blend-mode: overlay;
+  }
+}
+
+/* scanline overlay */
+@utility scanlines {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(20, 12, 4, 0) 0px,
+      rgba(20, 12, 4, 0) 2px,
+      rgba(20, 12, 4, 0.08) 3px,
+      rgba(20, 12, 4, 0) 4px
+    );
+    mix-blend-mode: multiply;
+    z-index: 1;
+  }
+}
+
+@keyframes ticker-tape {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@utility animate-ticker {
+  animation: ticker-tape 28s linear infinite;
+}

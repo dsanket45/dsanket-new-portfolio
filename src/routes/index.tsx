@@ -16,10 +16,10 @@ import mainPhoto from "@/assets/sanket-main.jpg.asset.json";
 import aboutPhoto from "@/assets/sanket-about.jpg.asset.json";
 import shot1 from "@/assets/sanket-shot1.jpg.asset.json";
 import shot3 from "@/assets/sanket-shot3.jpg.asset.json";
-import jWorkspace from "@/assets/journey-workspace.jpg.asset.json";
-import jSketch from "@/assets/journey-sketch.jpg.asset.json";
-import jCollege from "@/assets/journey-college.jpg.asset.json";
-import jBengaluru from "@/assets/journey-bengaluru.jpg.asset.json";
+import jCode from "@/assets/journey-code.jpg.asset.json";
+import jProduct from "@/assets/journey-product.jpg.asset.json";
+import jCs from "@/assets/journey-cs.jpg.asset.json";
+import jMath from "@/assets/journey-math.jpg.asset.json";
 
 const Github = (p: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...p}>
@@ -106,7 +106,7 @@ const JOURNEY: Array<{
     tag: "Work",
     notes:
       "Shipping responsive React + Spring Boot applications. Owning UI/UX details, API design and cloud deployment.",
-    image: jBengaluru.url,
+    image: jCode.url,
     highlights: [
       "Led the redesign of internal tools — 40% faster task completion",
       "Designed REST APIs powering 6+ production modules",
@@ -123,7 +123,7 @@ const JOURNEY: Array<{
     tag: "Internship",
     notes:
       "Product thinking, design innovation and the entrepreneurial mindset behind building real IT products.",
-    image: jSketch.url,
+    image: jProduct.url,
     highlights: [
       "Built rapid product concepts end-to-end in a week",
       "Pitched 2 prototypes to mentors and senior engineers",
@@ -140,7 +140,7 @@ const JOURNEY: Array<{
     tag: "Education",
     notes:
       "Strong fundamentals in programming, algorithms, systems and modern software engineering.",
-    image: jWorkspace.url,
+    image: jCs.url,
     highlights: [
       "Built 10+ academic & personal projects — web, ML, systems",
       "Specialised in full-stack engineering and human-centred design",
@@ -157,7 +157,7 @@ const JOURNEY: Array<{
     tag: "Education",
     notes:
       "Physics, Chemistry, Mathematics — the quiet years that built the discipline behind the craft.",
-    image: jCollege.url,
+    image: jMath.url,
     highlights: [
       "Built the maths and physics foundation that engineering rests on",
       "Discovered programming through after-school tinkering",
@@ -620,9 +620,9 @@ function Gallery() {
 
   const frames = [
     { src: shot1.url, label: "portrait · 2024", caption: "Light is a co-author." },
-    { src: jWorkspace.url, label: "studio · 2025", caption: "Where the work happens." },
+    { src: jCode.url, label: "the editor · 2025", caption: "Where the work happens." },
     { src: aboutPhoto.url, label: "off-camera · 2024", caption: "Between the deadlines." },
-    { src: jSketch.url, label: "process · 2024", caption: "Always sketching first." },
+    { src: jProduct.url, label: "process · 2024", caption: "Always sketching first." },
     { src: shot3.url, label: "frame · 2023", caption: "An eye for composition." },
   ];
   const ys = [y1, y2, y3, y4, y5];
@@ -941,9 +941,11 @@ function Journey() {
   });
   const lineScale = useTransform(scrollYProgress, [0.06, 0.92], [0, 1]);
   const lineSpring = useSpring(lineScale, { stiffness: 90, damping: 26, mass: 0.5 });
+  const parallaxY = useTransform(scrollYProgress, [0, 1], ["-4%", "4%"]);
 
   const [active, setActive] = useState(0);
-  const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
+  const itemRefs = useRef<Array<HTMLElement | null>>([]);
+
   useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) => {
@@ -961,17 +963,36 @@ function Journey() {
   }, []);
 
   const activeItem = JOURNEY[active] ?? JOURNEY[0];
+  const total = JOURNEY.length;
+
+  const scrollTo = (i: number) => {
+    itemRefs.current[i]?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
 
   return (
     <section
       id="journey"
       ref={sectionRef}
-      className="relative overflow-hidden bg-card py-24 lg:py-40"
+      className="relative overflow-hidden bg-card py-24 lg:py-36"
     >
       {/* ambient washes */}
       <div className="pointer-events-none absolute inset-0 paper-grain opacity-40" />
-      <div className="pointer-events-none absolute -top-32 left-[8%] h-[520px] w-[520px] rounded-full bg-ember/10 blur-3xl" />
-      <div className="pointer-events-none absolute bottom-0 right-[-10%] h-[480px] w-[480px] rounded-full bg-cobalt/10 blur-3xl" />
+      <div className="pointer-events-none absolute -top-32 left-[5%] h-[520px] w-[520px] rounded-full bg-ember/10 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 right-[-12%] h-[520px] w-[520px] rounded-full bg-cobalt/10 blur-3xl" />
+
+      {/* terminal-style top tape */}
+      <div className="relative mx-auto mb-12 max-w-[1480px] overflow-hidden border-y border-border/60 bg-paper/40 px-6 py-2.5 backdrop-blur-sm lg:px-12">
+        <div className="flex items-center gap-4 font-mono-label text-muted-foreground">
+          <span className="flex gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-ember/80" />
+            <span className="h-2 w-2 rounded-full bg-clay/80" />
+            <span className="h-2 w-2 rounded-full bg-moss/70" />
+          </span>
+          <span className="text-foreground">~ / chapters.log</span>
+          <span className="hidden text-muted-foreground sm:inline">— git log --oneline --since="2019"</span>
+          <span className="ml-auto text-ember">● live</span>
+        </div>
+      </div>
 
       <div className="relative mx-auto max-w-[1480px] px-6 lg:px-12">
         {/* heading */}
@@ -988,12 +1009,11 @@ function Journey() {
             </p>
           </div>
 
-          {/* compact stats */}
           <div className="grid grid-cols-3 gap-6 text-right sm:gap-10">
             {[
               ["4+", "chapters"],
-              ["10+", "projects shipped"],
-              ["2025", "current"],
+              ["10+", "shipped"],
+              ["2026", "current"],
             ].map(([v, l]) => (
               <div key={l}>
                 <p className="font-display text-3xl text-ember sm:text-4xl">{v}</p>
@@ -1003,20 +1023,26 @@ function Journey() {
           </div>
         </div>
 
-        {/* ── DESKTOP : sticky-aside + timeline ── */}
+        {/* ── DESKTOP ── */}
         <div className="mt-20 hidden lg:grid lg:grid-cols-12 lg:gap-12">
-          {/* sticky aside — giant year + image preview */}
+          {/* sticky aside */}
           <aside className="lg:col-span-5">
             <div className="sticky top-24">
-              <div className="flex items-baseline gap-4">
-                <span className="font-mono-label text-muted-foreground">now reading</span>
-                <span className="h-px flex-1 bg-border" />
+              {/* meta line */}
+              <div className="flex items-center gap-3 font-mono-label text-muted-foreground">
+                <span className="text-ember">›</span>
+                <span>chapter</span>
+                <span className="text-foreground">
+                  {String(active + 1).padStart(2, "0")}
+                </span>
+                <span>of {String(total).padStart(2, "0")}</span>
+                <span className="ml-auto h-px flex-1 bg-border" />
               </div>
 
-              {/* giant year — animated swap */}
-              <div className="relative mt-6 h-[10rem] overflow-hidden">
+              {/* monospace giant year with cursor */}
+              <div className="relative mt-5 h-[9.5rem] overflow-hidden">
                 {JOURNEY.map((j, i) => (
-                  <motion.p
+                  <motion.div
                     key={j.year + i}
                     initial={false}
                     animate={{
@@ -1024,84 +1050,142 @@ function Journey() {
                       opacity: i === active ? 1 : 0,
                     }}
                     transition={{ type: "spring", stiffness: 120, damping: 22 }}
-                    className="absolute inset-0 font-display text-[9rem] leading-none tracking-tight text-foreground"
+                    className="absolute inset-0 flex items-end gap-2 font-mono text-[8.5rem] leading-none tracking-tight text-foreground"
                   >
-                    {j.year}
-                  </motion.p>
+                    <span>{j.year}</span>
+                    <span className="mb-3 inline-block h-[0.85em] w-[0.12em] bg-ember animate-blink" />
+                  </motion.div>
                 ))}
               </div>
 
-              {/* meta + image */}
-              <div className="mt-6 flex items-center gap-3">
+              {/* tag + when */}
+              <motion.div
+                key={activeItem.role}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="mt-4 flex items-center gap-3"
+              >
                 <span className="rounded-full bg-ember/10 px-3 py-1 font-mono-label text-ember">
                   {activeItem.tag}
                 </span>
                 <span className="font-mono-label text-muted-foreground">
                   {activeItem.when}
                 </span>
-              </div>
+              </motion.div>
 
-              <div className="relative mt-6 overflow-hidden rounded-3xl border border-border bg-paper aspect-[4/5]">
+              {/* image with grid + scanline + duotone tint */}
+              <div className="relative mt-6 aspect-[5/6] overflow-hidden rounded-3xl border border-border bg-foreground grid-overlay scanlines">
                 {JOURNEY.map((j, i) => (
-                  <motion.img
+                  <motion.div
                     key={j.year + i}
-                    src={j.image}
-                    alt={j.role}
-                    loading="lazy"
                     initial={false}
-                    animate={{ opacity: i === active ? 1 : 0, scale: i === active ? 1 : 1.04 }}
-                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute inset-0 h-full w-full object-cover"
+                    animate={{
+                      opacity: i === active ? 1 : 0,
+                      scale: i === active ? 1 : 1.06,
+                    }}
+                    transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute inset-0"
+                  >
+                    <motion.img
+                      src={j.image}
+                      alt={j.role}
+                      loading="lazy"
+                      style={{ y: parallaxY }}
+                      className="h-[108%] w-full object-cover"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/10 to-transparent" />
+                    <div className="pointer-events-none absolute inset-0 mix-blend-color bg-ember/20" />
+                  </motion.div>
+                ))}
+
+                {/* corner ticks */}
+                {(["top-3 left-3", "top-3 right-3", "bottom-3 left-3", "bottom-3 right-3"] as const).map((p) => (
+                  <span
+                    key={p}
+                    className={`absolute h-3 w-3 border-paper/60 ${p} ${
+                      p.includes("top") ? "border-t" : "border-b"
+                    } ${p.includes("left") ? "border-l" : "border-r"}`}
                   />
                 ))}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent" />
-                <div className="absolute bottom-5 left-5 right-5 text-paper">
-                  <p className="font-display text-2xl leading-tight">{activeItem.role}</p>
-                  <p className="mt-1 font-mono-label text-paper/80">
+
+                <div className="absolute bottom-5 left-5 right-5 z-[2] text-paper">
+                  <p className="font-mono-label text-paper/70">
+                    {activeItem.tag} · {activeItem.year}
+                  </p>
+                  <p className="mt-1.5 font-display text-2xl leading-tight">
+                    {activeItem.role}
+                  </p>
+                  <p className="mt-0.5 font-mono-label text-paper/70">
                     {activeItem.org} · {activeItem.city}
                   </p>
                 </div>
               </div>
 
+              {/* chapter tab buttons */}
+              <div className="mt-6 space-y-1.5">
+                {JOURNEY.map((j, i) => (
+                  <button
+                    key={j.role + i}
+                    onClick={() => scrollTo(i)}
+                    className={`group flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-left font-mono-label transition-all duration-300 ${
+                      active === i
+                        ? "border-ember/40 bg-ember/5 text-foreground"
+                        : "border-border bg-transparent text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+                    }`}
+                  >
+                    <span
+                      className={`grid h-5 w-7 place-items-center rounded text-[10px] ${
+                        active === i ? "bg-ember text-paper" : "bg-card text-muted-foreground"
+                      }`}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="truncate">{j.year} — {j.tag}</span>
+                    <span className="ml-auto truncate text-muted-foreground/80">{j.org}</span>
+                  </button>
+                ))}
+              </div>
+
               {/* progress */}
               <div className="mt-6 flex items-center gap-4">
-                <span className="font-mono-label text-muted-foreground">
-                  {String(active + 1).padStart(2, "0")} / {String(JOURNEY.length).padStart(2, "0")}
-                </span>
+                <span className="font-mono-label text-muted-foreground">progress</span>
                 <div className="relative h-px flex-1 bg-border">
                   <motion.span
                     style={{ scaleX: lineSpring, transformOrigin: "left" }}
                     className="absolute inset-0 block h-px bg-ember"
                   />
                 </div>
+                <span className="font-mono-label text-ember">
+                  {String(Math.round(((active + 1) / total) * 100)).padStart(2, "0")}%
+                </span>
               </div>
             </div>
           </aside>
 
-          {/* right rail — entries */}
+          {/* right rail */}
           <div className="relative lg:col-span-7">
-            {/* rail */}
             <div className="pointer-events-none absolute left-4 top-0 bottom-0 w-px bg-border" />
             <motion.div
               style={{ scaleY: lineSpring, transformOrigin: "top" }}
               className="pointer-events-none absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-ember via-ember/70 to-transparent"
             />
 
-            <ol className="space-y-10">
+            <ol className="space-y-12">
               {JOURNEY.map((j, i) => (
                 <motion.li
                   key={j.role + i}
                   ref={(el) => { itemRefs.current[i] = el; }}
                   data-idx={i}
-                  initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
-                  whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  initial={{ opacity: 0, x: 30, filter: "blur(8px)" }}
+                  whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                   viewport={{ margin: "-15% 0px -15% 0px" }}
                   transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   className="relative pl-14"
                 >
                   {/* node */}
                   <span
-                    className={`absolute left-[9px] top-7 grid h-3.5 w-3.5 place-items-center rounded-full bg-card ring-1 transition-all duration-500 ${
+                    className={`absolute left-[9px] top-8 grid h-3.5 w-3.5 place-items-center rounded-full bg-card ring-1 transition-all duration-500 ${
                       active === i ? "ring-ember scale-125" : "ring-border"
                     }`}
                   >
@@ -1116,54 +1200,72 @@ function Journey() {
                   </span>
 
                   <article
-                    className={`group relative overflow-hidden rounded-3xl border bg-paper/70 p-7 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:bg-paper hover:shadow-[0_30px_80px_-30px_rgba(0,0,0,0.25)] ${
+                    className={`group relative overflow-hidden rounded-2xl border bg-paper/70 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:bg-paper hover:shadow-[0_30px_80px_-30px_rgba(0,0,0,0.25)] ${
                       active === i ? "border-ember/40" : "border-border"
                     }`}
                   >
-                    <span className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-ember/0 via-ember/0 to-ember/[0.07] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="flex items-center gap-3">
-                          <span className="rounded-full bg-ember/10 px-3 py-1 font-mono-label text-ember">
-                            {j.tag}
-                          </span>
-                          <span className="font-mono-label text-muted-foreground">{j.when}</span>
-                        </div>
-                        <h3 className="mt-4 font-display text-3xl leading-tight">{j.role}</h3>
-                        <p className="mt-1 text-muted-foreground">
-                          {j.org} <span className="text-ember">·</span> {j.city}
-                        </p>
-                      </div>
-                      <span className="font-display text-5xl leading-none text-foreground/15 transition-colors group-hover:text-ember/40">
-                        {j.year}
+                    {/* IDE-style top chrome */}
+                    <div className="flex items-center gap-3 border-b border-border/60 bg-card/60 px-5 py-2.5 font-mono-label text-muted-foreground">
+                      <span className="flex gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-ember/70" />
+                        <span className="h-2 w-2 rounded-full bg-clay/70" />
+                        <span className="h-2 w-2 rounded-full bg-moss/60" />
                       </span>
+                      <span className="text-foreground">
+                        chapter_{String(i + 1).padStart(2, "0")}.md
+                      </span>
+                      <span className="ml-auto text-ember">{j.year}</span>
                     </div>
 
-                    <div className="mt-5 h-px w-12 bg-ember/60 transition-all duration-500 group-hover:w-32" />
+                    <span className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-ember/0 via-ember/0 to-ember/[0.08] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-                    <p className="mt-5 text-base leading-relaxed text-muted-foreground">
-                      {j.notes}
-                    </p>
+                    <div className="p-7">
+                      {/* code-comment metadata */}
+                      <p className="font-mono-label text-muted-foreground">
+                        <span className="text-ember/70">//</span> {j.when} · {j.city}
+                      </p>
 
-                    <ul className="mt-6 space-y-2.5">
-                      {j.highlights.map((h) => (
-                        <li key={h} className="flex items-start gap-3 text-sm text-foreground/80">
-                          <span className="mt-2 inline-block h-[5px] w-[5px] shrink-0 rounded-full bg-ember" />
-                          <span>{h}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="mt-6 flex flex-wrap gap-2">
-                      {j.stack.map((s) => (
-                        <span
-                          key={s}
-                          className="rounded-full border border-border bg-card/60 px-2.5 py-1 font-mono-label text-foreground/70"
-                        >
-                          {s}
+                      <div className="mt-3 flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="font-display text-3xl leading-tight">{j.role}</h3>
+                          <p className="mt-1 text-muted-foreground">
+                            {j.org} <span className="text-ember">·</span> {j.tag}
+                          </p>
+                        </div>
+                        <span className="font-display text-5xl leading-none text-foreground/12 transition-colors group-hover:text-ember/40">
+                          0{i + 1}
                         </span>
-                      ))}
+                      </div>
+
+                      <div className="mt-5 h-px w-12 bg-ember/60 transition-all duration-500 group-hover:w-40" />
+
+                      <p className="mt-5 text-base leading-relaxed text-muted-foreground">
+                        {j.notes}
+                      </p>
+
+                      <ul className="mt-6 space-y-2.5">
+                        {j.highlights.map((h) => (
+                          <li
+                            key={h}
+                            className="flex items-start gap-3 text-sm text-foreground/85"
+                          >
+                            <span className="mt-1 font-mono text-ember">›</span>
+                            <span>{h}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="mt-6 flex flex-wrap gap-2">
+                        {j.stack.map((s) => (
+                          <span
+                            key={s}
+                            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/60 px-2.5 py-1 font-mono-label text-foreground/70"
+                          >
+                            <span className="h-1 w-1 rounded-full bg-ember/70" />
+                            {s}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </article>
                 </motion.li>
@@ -1172,11 +1274,14 @@ function Journey() {
           </div>
         </div>
 
-        {/* ── MOBILE : stacked cards with sticky year ── */}
+        {/* ── MOBILE ── */}
         <div className="relative mt-14 lg:hidden">
           <div className="sticky top-16 z-10 mb-6 -mx-6 flex items-center justify-between border-b border-border/60 bg-card/85 px-6 py-3 backdrop-blur-md">
-            <span className="font-mono-label text-muted-foreground">timeline</span>
-            <div className="relative h-[1.1em] w-[5ch] overflow-hidden text-right">
+            <div className="flex items-center gap-2 font-mono-label text-muted-foreground">
+              <span className="text-ember">›</span>
+              <span>chapter {String(active + 1).padStart(2, "0")}</span>
+            </div>
+            <div className="relative h-[1.2em] w-[5ch] overflow-hidden text-right">
               {JOURNEY.map((j, i) => (
                 <motion.span
                   key={j.year + i}
@@ -1186,7 +1291,7 @@ function Journey() {
                     opacity: i === active ? 1 : 0,
                   }}
                   transition={{ type: "spring", stiffness: 160, damping: 22 }}
-                  className="absolute inset-0 font-display text-3xl leading-none text-ember"
+                  className="absolute inset-0 font-mono text-2xl leading-none text-ember"
                 >
                   {j.year}
                 </motion.span>
@@ -1226,23 +1331,33 @@ function Journey() {
                   </span>
 
                   <div className="overflow-hidden rounded-2xl border border-border bg-paper/60">
-                    <div className="relative aspect-[16/10] overflow-hidden">
+                    <div className="flex items-center gap-2 border-b border-border/60 bg-card/60 px-4 py-2 font-mono-label text-muted-foreground">
+                      <span className="flex gap-1">
+                        <span className="h-1.5 w-1.5 rounded-full bg-ember/70" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-clay/70" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-moss/60" />
+                      </span>
+                      <span className="text-foreground">chapter_{String(i + 1).padStart(2, "0")}.md</span>
+                      <span className="ml-auto text-ember">{j.year}</span>
+                    </div>
+
+                    <div className="relative aspect-[16/10] overflow-hidden bg-foreground grid-overlay scanlines">
                       <img
                         src={j.image}
                         alt={j.role}
                         loading="lazy"
                         className="h-full w-full object-cover"
                       />
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
-                      <span className="absolute left-3 top-3 rounded-full bg-paper/90 px-2.5 py-0.5 font-mono-label text-ember">
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent" />
+                      <div className="pointer-events-none absolute inset-0 mix-blend-color bg-ember/15" />
+                      <span className="absolute left-3 top-3 z-[2] rounded-full bg-paper/90 px-2.5 py-0.5 font-mono-label text-ember">
                         {j.tag}
-                      </span>
-                      <span className="absolute right-3 bottom-3 font-display text-4xl leading-none text-paper">
-                        {j.year}
                       </span>
                     </div>
                     <div className="p-5">
-                      <p className="font-mono-label text-muted-foreground">{j.when}</p>
+                      <p className="font-mono-label text-muted-foreground">
+                        <span className="text-ember/70">//</span> {j.when}
+                      </p>
                       <h3 className="mt-2 font-display text-2xl leading-tight">{j.role}</h3>
                       <p className="mt-1 text-sm text-muted-foreground">
                         {j.org} <span className="text-ember">·</span> {j.city}
@@ -1253,8 +1368,8 @@ function Journey() {
                       </p>
                       <ul className="mt-4 space-y-2">
                         {j.highlights.map((h) => (
-                          <li key={h} className="flex items-start gap-2.5 text-sm text-foreground/80">
-                            <span className="mt-2 inline-block h-[5px] w-[5px] shrink-0 rounded-full bg-ember" />
+                          <li key={h} className="flex items-start gap-2.5 text-sm text-foreground/85">
+                            <span className="mt-0.5 font-mono text-ember">›</span>
                             <span>{h}</span>
                           </li>
                         ))}
@@ -1263,8 +1378,9 @@ function Journey() {
                         {j.stack.map((s) => (
                           <span
                             key={s}
-                            className="rounded-full border border-border bg-card/60 px-2.5 py-1 font-mono-label text-foreground/70"
+                            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/60 px-2.5 py-1 font-mono-label text-foreground/70"
                           >
+                            <span className="h-1 w-1 rounded-full bg-ember/70" />
                             {s}
                           </span>
                         ))}
@@ -1278,11 +1394,12 @@ function Journey() {
         </div>
 
         {/* footer caption */}
-        <div className="mt-20 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6">
-          <p className="font-mono-label text-muted-foreground">
-            {active + 1} / {JOURNEY.length} — {activeItem.year}
+        <div className="mt-20 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6 font-mono-label">
+          <p className="text-muted-foreground">
+            <span className="text-ember">›</span> end of log · {active + 1} / {total} —{" "}
+            <span className="text-foreground">{activeItem.year}</span>
           </p>
-          <p className="max-w-md text-sm text-muted-foreground">
+          <p className="max-w-md text-sm text-muted-foreground normal-case tracking-normal">
             And the chapter still being written — building, learning, and
             shipping in <span className="text-foreground">2026</span>.
           </p>
@@ -1291,6 +1408,8 @@ function Journey() {
     </section>
   );
 }
+
+
 
 
 
