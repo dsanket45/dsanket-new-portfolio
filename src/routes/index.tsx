@@ -16,10 +16,10 @@ import mainPhoto from "@/assets/sanket-main.jpg.asset.json";
 import aboutPhoto from "@/assets/sanket-about.jpg.asset.json";
 import shot1 from "@/assets/sanket-shot1.jpg.asset.json";
 import shot3 from "@/assets/sanket-shot3.jpg.asset.json";
-import jWorkspace from "@/assets/journey-workspace.jpg.asset.json";
-import jSketch from "@/assets/journey-sketch.jpg.asset.json";
-import jCollege from "@/assets/journey-college.jpg.asset.json";
-import jBengaluru from "@/assets/journey-bengaluru.jpg.asset.json";
+import jCode from "@/assets/journey-code.jpg.asset.json";
+import jProduct from "@/assets/journey-product.jpg.asset.json";
+import jCs from "@/assets/journey-cs.jpg.asset.json";
+import jMath from "@/assets/journey-math.jpg.asset.json";
 
 const Github = (p: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...p}>
@@ -106,7 +106,7 @@ const JOURNEY: Array<{
     tag: "Work",
     notes:
       "Shipping responsive React + Spring Boot applications. Owning UI/UX details, API design and cloud deployment.",
-    image: jBengaluru.url,
+    image: jCode.url,
     highlights: [
       "Led the redesign of internal tools — 40% faster task completion",
       "Designed REST APIs powering 6+ production modules",
@@ -123,7 +123,7 @@ const JOURNEY: Array<{
     tag: "Internship",
     notes:
       "Product thinking, design innovation and the entrepreneurial mindset behind building real IT products.",
-    image: jSketch.url,
+    image: jProduct.url,
     highlights: [
       "Built rapid product concepts end-to-end in a week",
       "Pitched 2 prototypes to mentors and senior engineers",
@@ -140,7 +140,7 @@ const JOURNEY: Array<{
     tag: "Education",
     notes:
       "Strong fundamentals in programming, algorithms, systems and modern software engineering.",
-    image: jWorkspace.url,
+    image: jCs.url,
     highlights: [
       "Built 10+ academic & personal projects — web, ML, systems",
       "Specialised in full-stack engineering and human-centred design",
@@ -157,7 +157,7 @@ const JOURNEY: Array<{
     tag: "Education",
     notes:
       "Physics, Chemistry, Mathematics — the quiet years that built the discipline behind the craft.",
-    image: jCollege.url,
+    image: jMath.url,
     highlights: [
       "Built the maths and physics foundation that engineering rests on",
       "Discovered programming through after-school tinkering",
@@ -620,9 +620,9 @@ function Gallery() {
 
   const frames = [
     { src: shot1.url, label: "portrait · 2024", caption: "Light is a co-author." },
-    { src: jWorkspace.url, label: "studio · 2025", caption: "Where the work happens." },
+    { src: jCode.url, label: "the editor · 2025", caption: "Where the work happens." },
     { src: aboutPhoto.url, label: "off-camera · 2024", caption: "Between the deadlines." },
-    { src: jSketch.url, label: "process · 2024", caption: "Always sketching first." },
+    { src: jProduct.url, label: "process · 2024", caption: "Always sketching first." },
     { src: shot3.url, label: "frame · 2023", caption: "An eye for composition." },
   ];
   const ys = [y1, y2, y3, y4, y5];
