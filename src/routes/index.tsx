@@ -1516,7 +1516,18 @@ function Journey() {
 
 function Contact() {
   return (
-    <section id="contact" className="relative py-28 lg:py-40">
+    <section id="contact" className="relative overflow-hidden py-28 lg:py-40">
+      {/* atmospheric night-city backdrop */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <img
+          src={contactBg.url}
+          alt=""
+          loading="lazy"
+          className="h-full w-full object-cover opacity-25"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-background to-transparent" />
+      </div>
       <div className="mx-auto max-w-[1480px] px-6 lg:px-12">
         <SectionLabel n="06" title="contact" />
 
