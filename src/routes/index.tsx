@@ -276,33 +276,104 @@ function Hero() {
     target: ref,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 140]);
   const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 8]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.15]);
 
-  // tilt on portrait
+  // pointer parallax on backdrop + portrait tilt
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const rX = useSpring(useTransform(my, [-1, 1], [8, -8]), { stiffness: 150, damping: 14 });
-  const rY = useSpring(useTransform(mx, [-1, 1], [-8, 8]), { stiffness: 150, damping: 14 });
+  const rX = useSpring(useTransform(my, [-1, 1], [10, -10]), { stiffness: 150, damping: 14 });
+  const rY = useSpring(useTransform(mx, [-1, 1], [-10, 10]), { stiffness: 150, damping: 14 });
+  const bgPX = useSpring(useTransform(mx, [-1, 1], [-24, 24]), { stiffness: 60, damping: 18 });
+  const bgPY = useSpring(useTransform(my, [-1, 1], [-16, 16]), { stiffness: 60, damping: 18 });
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      mx.set((e.clientX / window.innerWidth - 0.5) * 2);
+      my.set((e.clientY / window.innerHeight - 0.5) * 2);
+    };
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [mx, my]);
+
+  // live time ticker
+  const [clock, setClock] = useState("");
+  useEffect(() => {
+    const t = () =>
+      setClock(
+        new Date().toLocaleTimeString("en-IN", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+          timeZone: "Asia/Kolkata",
+        }),
+      );
+    t();
+    const id = setInterval(t, 1000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <section
       id="top"
       ref={ref}
-      className="relative overflow-hidden pt-32 pb-24 lg:pt-40 lg:pb-32"
+      className="relative overflow-hidden pt-28 pb-20 lg:min-h-screen lg:pt-32 lg:pb-24"
     >
-      <div className="pointer-events-none absolute -top-40 right-[-10%] h-[600px] w-[600px] rounded-full bg-ember/20 blur-3xl" />
-      <div className="pointer-events-none absolute top-1/2 left-[-10%] h-[500px] w-[500px] rounded-full bg-clay/30 blur-3xl" />
-      <div className="pointer-events-none absolute bottom-10 right-1/3 h-[400px] w-[400px] rounded-full bg-cobalt/10 blur-3xl" />
+      {/* cinematic backdrop image with parallax + ken-burns */}
+      <motion.div
+        aria-hidden
+        style={{ y: bgY, scale: bgScale }}
+        className="pointer-events-none absolute inset-0 -z-10"
+      >
+        <motion.div style={{ x: bgPX, y: bgPY }} className="absolute inset-[-6%]">
+          <img
+            src={heroBg.url}
+            alt=""
+            className="h-full w-full object-cover opacity-[0.55] mix-blend-multiply"
+          />
+        </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/20 to-background/40" />
+      </motion.div>
 
-      <div className="relative mx-auto grid max-w-[1480px] grid-cols-1 gap-12 px-6 lg:grid-cols-12 lg:gap-8 lg:px-12">
-        <motion.div style={{ y, opacity }} className="lg:col-span-7 lg:pt-6">
+      {/* soft color washes */}
+      <div className="pointer-events-none absolute -top-40 right-[-10%] h-[600px] w-[600px] rounded-full bg-ember/25 blur-3xl" />
+      <div className="pointer-events-none absolute top-1/2 left-[-10%] h-[500px] w-[500px] rounded-full bg-clay/25 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-10 right-1/3 h-[400px] w-[400px] rounded-full bg-cobalt/15 blur-3xl" />
+
+      {/* top ticker tape */}
+      <motion.div
+        initial={{ opacity: 0, y: -6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="relative mx-auto mb-10 flex max-w-[1480px] items-center gap-3 border-y border-border/50 bg-background/60 px-6 py-2 font-mono-label text-muted-foreground backdrop-blur-md lg:px-12"
+      >
+        <span className="flex gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-ember/80" />
+          <span className="h-1.5 w-1.5 rounded-full bg-clay/80" />
+          <span className="h-1.5 w-1.5 rounded-full bg-moss/70" />
+        </span>
+        <span className="text-foreground">portfolio_v2026.session</span>
+        <span className="hidden sm:inline">— last-commit main · feat(hero): cinematic</span>
+        <span className="ml-auto hidden items-center gap-2 sm:flex">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss opacity-75" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-moss" />
+          </span>
+          <span>BLR · {clock} IST</span>
+        </span>
+      </motion.div>
+
+      <div className="relative mx-auto grid max-w-[1480px] grid-cols-1 gap-12 px-6 lg:grid-cols-12 lg:items-center lg:gap-8 lg:px-12">
+        <motion.div style={{ y, opacity }} className="lg:col-span-7">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5"
+            className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1.5 backdrop-blur-md"
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss opacity-75" />
@@ -313,29 +384,38 @@ function Hero() {
             </span>
           </motion.div>
 
-          <h1 className="font-display text-[clamp(3.5rem,9vw,8.5rem)] leading-[0.92] tracking-tight">
+          <h1 className="font-display text-[clamp(3.25rem,10vw,9.5rem)] leading-[0.9] tracking-tight">
             <Reveal delay={0.05}><span className="block">Building</span></Reveal>
-            <Reveal delay={0.18}><span className="block"><em className="italic text-ember">software</em></span></Reveal>
-            <Reveal delay={0.31}><span className="block">with care.</span></Reveal>
+            <Reveal delay={0.18}>
+              <span className="block">
+                <em className="italic text-ember">software</em>
+                <span className="ml-3 hidden text-ember/70 sm:inline">✦</span>
+              </span>
+            </Reveal>
+            <Reveal delay={0.31}>
+              <span className="block">
+                with care<span className="text-ember">.</span>
+              </span>
+            </Reveal>
           </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.55 }}
-            className="mt-10 max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
+            className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground sm:mt-10 sm:text-xl"
           >
             I'm <strong className="text-foreground">D Sanket</strong> — a
             full-stack engineer who designs as much as I code. I build fast,
             scalable React + Spring Boot products and sweat the details until
-            they feel inevitable.
+            they feel <em className="italic text-foreground">inevitable</em>.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
-            className="mt-10 flex flex-wrap items-center gap-4"
+            className="mt-8 flex flex-wrap items-center gap-4 sm:mt-10"
           >
             <Magnetic>
               <a
@@ -362,7 +442,7 @@ function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.9 }}
-            className="mt-16 grid max-w-md grid-cols-3 gap-6 border-t border-border pt-8"
+            className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-border pt-8 sm:mt-16"
           >
             <Stat n="4+" l="Years building" />
             <Stat n="10+" l="Projects shipped" />
@@ -370,7 +450,7 @@ function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* right — portrait with tilt */}
+        {/* right — portrait card with tilt */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -387,7 +467,7 @@ function Hero() {
             <motion.div style={{ rotate }} className="absolute inset-0 -rotate-2 rounded-[28px] border border-border bg-card" />
             <motion.div
               style={{ rotateX: rX, rotateY: rY }}
-              className="tilt-card relative h-full w-full overflow-hidden rounded-[28px] border border-border shadow-[0_30px_60px_-20px_rgba(70,40,20,0.3)]"
+              className="tilt-card relative h-full w-full overflow-hidden rounded-[28px] border border-border shadow-[0_30px_60px_-20px_rgba(70,40,20,0.35)]"
             >
               <img
                 src={mainPhoto.url}
@@ -396,21 +476,27 @@ function Hero() {
                 height={1536}
                 className="h-full w-full object-cover"
               />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent p-5">
-                <p className="font-mono-label text-paper/80">001 / portrait</p>
-                <p className="font-display text-2xl text-paper">Sanket, 2026</p>
+              {/* film-noise gradient */}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
+              {/* corner ticks */}
+              {(["top-3 left-3", "top-3 right-3", "bottom-3 left-3", "bottom-3 right-3"] as const).map((p) => (
+                <span
+                  key={p}
+                  className={`absolute h-3 w-3 border-paper/70 ${p} ${
+                    p.includes("top") ? "border-t" : "border-b"
+                  } ${p.includes("left") ? "border-l" : "border-r"}`}
+                />
+              ))}
+              <div className="absolute inset-x-0 top-0 flex items-center gap-2 px-4 py-3 font-mono-label text-paper/85">
+                <span className="h-1.5 w-1.5 rounded-full bg-ember" />
+                <span>REC · 001</span>
+                <span className="ml-auto">2026</span>
+              </div>
+              <div className="absolute inset-x-0 bottom-0 p-5">
+                <p className="font-mono-label text-paper/80">portrait / sanket.jpg</p>
+                <p className="font-display text-2xl text-paper">Sanket, Bengaluru</p>
               </div>
             </motion.div>
-
-            {/* <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 0.6 }}
-              className="animate-float absolute -left-6 top-8 hidden rotate-[-6deg] rounded-2xl border border-border bg-paper px-4 py-3 shadow-lg sm:block"
-            >
-              <p className="font-mono-label text-muted-foreground">currently</p>
-              <p className="font-display text-lg">Swajyot Tech</p>
-            </motion.div> */}
 
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -438,9 +524,20 @@ function Hero() {
         </motion.div>
       </div>
 
-      {/* social row */}
-      <div className="relative mx-auto mt-20 flex max-w-[1480px] flex-wrap items-center justify-between gap-4 border-t border-border px-6 pt-6 lg:px-12">
-        <p className="font-mono-label text-muted-foreground">(scroll) — the work</p>
+      {/* bottom row: socials + scroll indicator */}
+      <div className="relative mx-auto mt-16 flex max-w-[1480px] flex-wrap items-center justify-between gap-4 border-t border-border px-6 pt-6 lg:mt-24 lg:px-12">
+        <div className="flex items-center gap-3">
+          <motion.span
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            className="grid h-8 w-8 place-items-center rounded-full border border-border"
+          >
+            <svg width="10" height="14" viewBox="0 0 10 14" fill="none">
+              <path d="M5 1v12M1 9l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </motion.span>
+          <p className="font-mono-label text-muted-foreground">scroll — the work</p>
+        </div>
         <div className="flex items-center gap-1">
           <Social href="https://github.com/dsanket45/" label="GitHub"><Github className="h-4 w-4" /></Social>
           <Social href="https://www.linkedin.com/in/sanket-d-39b735246/" label="LinkedIn"><Linkedin className="h-4 w-4" /></Social>
