@@ -276,19 +276,21 @@ function Hero() {
     target: ref,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 140]);
-  const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, 8]);
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.15]);
+  const yUp = useTransform(scrollYProgress, [0, 1], [0, -120]);
+  const yDown = useTransform(scrollYProgress, [0, 1], [0, 180]);
+  const fade = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.2]);
 
-  // pointer parallax on backdrop + portrait tilt
+  // pointer parallax
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const rX = useSpring(useTransform(my, [-1, 1], [10, -10]), { stiffness: 150, damping: 14 });
-  const rY = useSpring(useTransform(mx, [-1, 1], [-10, 10]), { stiffness: 150, damping: 14 });
-  const bgPX = useSpring(useTransform(mx, [-1, 1], [-24, 24]), { stiffness: 60, damping: 18 });
-  const bgPY = useSpring(useTransform(my, [-1, 1], [-16, 16]), { stiffness: 60, damping: 18 });
+  const rX = useSpring(useTransform(my, [-1, 1], [8, -8]), { stiffness: 120, damping: 14 });
+  const rY = useSpring(useTransform(mx, [-1, 1], [-10, 10]), { stiffness: 120, damping: 14 });
+  const wordX = useSpring(useTransform(mx, [-1, 1], [30, -30]), { stiffness: 60, damping: 18 });
+  const wordXInv = useSpring(useTransform(mx, [-1, 1], [-40, 40]), { stiffness: 60, damping: 18 });
+  const bgPX = useSpring(useTransform(mx, [-1, 1], [-24, 24]), { stiffness: 40, damping: 20 });
+  const bgPY = useSpring(useTransform(my, [-1, 1], [-16, 16]), { stiffness: 40, damping: 20 });
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
@@ -299,16 +301,13 @@ function Hero() {
     return () => window.removeEventListener("mousemove", onMove);
   }, [mx, my]);
 
-  // live time ticker
   const [clock, setClock] = useState("");
   useEffect(() => {
     const t = () =>
       setClock(
         new Date().toLocaleTimeString("en-IN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-          timeZone: "Asia/Kolkata",
+          hour: "2-digit", minute: "2-digit", second: "2-digit",
+          hour12: false, timeZone: "Asia/Kolkata",
         }),
       );
     t();
@@ -320,9 +319,9 @@ function Hero() {
     <section
       id="top"
       ref={ref}
-      className="relative overflow-hidden pt-28 pb-20 lg:min-h-screen lg:pt-32 lg:pb-24"
+      className="relative overflow-hidden pt-24 pb-16 lg:min-h-[100svh] lg:pt-28 lg:pb-20"
     >
-      {/* cinematic backdrop image with parallax + ken-burns */}
+      {/* AURORA BACKDROP */}
       <motion.div
         aria-hidden
         style={{ y: bgY, scale: bgScale }}
@@ -332,218 +331,326 @@ function Hero() {
           <img
             src={heroBg.url}
             alt=""
-            className="h-full w-full object-cover opacity-[0.55] mix-blend-multiply"
+            className="h-full w-full object-cover opacity-[0.5] mix-blend-multiply"
           />
         </motion.div>
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/20 to-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/70 to-background" />
+        {/* aurora blobs */}
+        <motion.div
+          animate={{ x: [0, 40, -20, 0], y: [0, -30, 20, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-32 right-[-8%] h-[640px] w-[640px] rounded-full bg-ember/30 blur-[120px]"
+        />
+        <motion.div
+          animate={{ x: [0, -30, 30, 0], y: [0, 40, -20, 0] }}
+          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/3 left-[-10%] h-[540px] w-[540px] rounded-full bg-clay/30 blur-[120px]"
+        />
+        <motion.div
+          animate={{ x: [0, 30, -20, 0], y: [0, 20, -30, 0] }}
+          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-0 right-1/3 h-[460px] w-[460px] rounded-full bg-cobalt/20 blur-[120px]"
+        />
+        {/* subtle grid */}
+        <div
+          className="absolute inset-0 opacity-[0.15]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)",
+            backgroundSize: "80px 80px",
+            color: "var(--ink)",
+            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 80%)",
+          }}
+        />
       </motion.div>
 
-      {/* soft color washes */}
-      <div className="pointer-events-none absolute -top-40 right-[-10%] h-[600px] w-[600px] rounded-full bg-ember/25 blur-3xl" />
-      <div className="pointer-events-none absolute top-1/2 left-[-10%] h-[500px] w-[500px] rounded-full bg-clay/25 blur-3xl" />
-      <div className="pointer-events-none absolute bottom-10 right-1/3 h-[400px] w-[400px] rounded-full bg-cobalt/15 blur-3xl" />
-
-      {/* top ticker tape */}
+      {/* MASTHEAD */}
       <motion.div
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative mx-auto mb-10 flex max-w-[1480px] items-center gap-3 border-y border-border/50 bg-background/60 px-6 py-2 font-mono-label text-muted-foreground backdrop-blur-md lg:px-12"
+        className="relative mx-auto mb-8 flex max-w-[1520px] items-center justify-between gap-4 border-y border-border/60 bg-background/50 px-6 py-2.5 font-mono-label text-muted-foreground backdrop-blur-md lg:mb-10 lg:px-12"
       >
-        <span className="flex gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-ember/80" />
-          <span className="h-1.5 w-1.5 rounded-full bg-clay/80" />
-          <span className="h-1.5 w-1.5 rounded-full bg-moss/70" />
-        </span>
-        <span className="text-foreground">portfolio_v2026.session</span>
-        <span className="hidden sm:inline">— last-commit main · feat(hero): cinematic</span>
-        <span className="ml-auto hidden items-center gap-2 sm:flex">
+        <div className="flex items-center gap-3">
+          <span className="flex gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-ember/80" />
+            <span className="h-1.5 w-1.5 rounded-full bg-clay/80" />
+            <span className="h-1.5 w-1.5 rounded-full bg-moss/70" />
+          </span>
+          <span className="text-foreground">ISSUE №26</span>
+          <span className="hidden sm:inline">— Vol. IV · The Craft Edition</span>
+        </div>
+        <div className="hidden md:block">JUL · 2026</div>
+        <div className="flex items-center gap-2">
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss opacity-75" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-moss" />
           </span>
-          <span>BLR · {clock} IST</span>
-        </span>
+          <span>BLR · {clock}</span>
+        </div>
       </motion.div>
 
-      <div className="relative mx-auto grid max-w-[1480px] grid-cols-1 gap-12 px-6 lg:grid-cols-12 lg:items-center lg:gap-8 lg:px-12">
-        <motion.div style={{ y, opacity }} className="lg:col-span-7">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1.5 backdrop-blur-md"
+      {/* GIANT WORDMARK — top word */}
+      <motion.div
+        style={{ x: wordX, y: yUp, opacity: fade }}
+        className="pointer-events-none relative mx-auto max-w-[1520px] px-4 lg:px-8"
+      >
+        <Reveal delay={0.05}>
+          <h1
+            aria-hidden
+            className="font-display text-[clamp(4.5rem,17vw,18rem)] leading-[0.82] tracking-[-0.04em] text-foreground/95"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-moss" />
-            </span>
-            <span className="font-mono-label text-foreground/70">
-              Available · Q1 2026 · Bengaluru, IN
-            </span>
-          </motion.div>
-
-          <h1 className="font-display text-[clamp(3.25rem,10vw,9.5rem)] leading-[0.9] tracking-tight">
-            <Reveal delay={0.05}><span className="block">Building</span></Reveal>
-            <Reveal delay={0.18}>
-              <span className="block">
-                <em className="italic text-ember">software</em>
-                <span className="ml-3 hidden text-ember/70 sm:inline">✦</span>
-              </span>
-            </Reveal>
-            <Reveal delay={0.31}>
-              <span className="block">
-                with care<span className="text-ember">.</span>
-              </span>
-            </Reveal>
+            SANKET
           </h1>
+        </Reveal>
+      </motion.div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.55 }}
-            className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground sm:mt-10 sm:text-xl"
-          >
-            I'm <strong className="text-foreground">D Sanket</strong> — a
-            full-stack engineer who designs as much as I code. I build fast,
-            scalable React + Spring Boot products and sweat the details until
-            they feel <em className="italic text-foreground">inevitable</em>.
-          </motion.p>
+      {/* CENTER STAGE — portrait + floating meta */}
+      <div className="relative mx-auto mt-2 grid max-w-[1520px] grid-cols-12 items-start gap-4 px-6 lg:mt-4 lg:px-12">
+        {/* left rail — role / bio */}
+        <motion.div
+          style={{ opacity: fade }}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
+          className="col-span-12 order-2 lg:order-1 lg:col-span-3 lg:pt-8"
+        >
+          <p className="font-mono-label mb-3 text-ember">// the subject</p>
+          <p className="max-w-xs text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+            <strong className="text-foreground">D Sanket</strong>, full-stack
+            engineer &amp; designer. React, Spring Boot, and a stubborn eye for
+            craft. Building products that feel{" "}
+            <em className="italic text-foreground">inevitable</em>.
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="mt-8 flex flex-wrap items-center gap-4 sm:mt-10"
-          >
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <Magnetic>
               <a
                 href="#work"
                 data-cursor="view work"
-                className="group inline-flex items-center gap-3 rounded-full bg-foreground px-6 py-3.5 text-base text-paper transition-all hover:bg-ember"
+                className="group inline-flex items-center gap-3 rounded-full bg-foreground px-5 py-3 text-sm text-paper transition-all hover:bg-ember"
               >
-                See selected work
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-paper/15 transition-transform group-hover:rotate-45">
-                  <ArrowUpRight className="h-3.5 w-3.5" />
+                See the work
+                <span className="grid h-6 w-6 place-items-center rounded-full bg-paper/15 transition-transform group-hover:rotate-45">
+                  <ArrowUpRight className="h-3 w-3" />
                 </span>
               </a>
             </Magnetic>
-            <a
-              href="#contact"
-              className="group inline-flex items-center gap-2 px-2 py-3 text-base"
-            >
-              <span className="ember-underline pb-0.5">or get in touch</span>
-              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            <a href="#contact" className="group inline-flex items-center gap-1.5 text-sm">
+              <span className="ember-underline pb-0.5">say hi</span>
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </a>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-            className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-border pt-8 sm:mt-16"
-          >
-            <Stat n="4+" l="Years building" />
-            <Stat n="10+" l="Projects shipped" />
-            <Stat n="5+" l="Certifications" />
-          </motion.div>
+          </div>
         </motion.div>
 
-        {/* right — portrait card with tilt */}
+        {/* center — portrait */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
+          style={{ opacity: fade }}
+          initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="relative lg:col-span-5"
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          className="col-span-12 order-1 lg:order-2 lg:col-span-6"
           onMouseMove={(e) => {
             const r = e.currentTarget.getBoundingClientRect();
             mx.set(((e.clientX - r.left) / r.width - 0.5) * 2);
             my.set(((e.clientY - r.top) / r.height - 0.5) * 2);
           }}
-          onMouseLeave={() => { mx.set(0); my.set(0); }}
         >
-          <div className="relative mx-auto aspect-[3/4] w-full max-w-md" style={{ perspective: 1000 }}>
-            <motion.div style={{ rotate }} className="absolute inset-0 -rotate-2 rounded-[28px] border border-border bg-card" />
+          <div
+            className="relative mx-auto aspect-[4/5] w-full max-w-[440px]"
+            style={{ perspective: 1200 }}
+          >
+            {/* rotating orbit ring */}
+            <motion.svg
+              viewBox="0 0 200 200"
+              className="animate-spin-slow pointer-events-none absolute -inset-6"
+              aria-hidden
+            >
+              <defs>
+                <path id="hero-orbit" d="M100,100 m-90,0 a90,90 0 1,1 180,0 a90,90 0 1,1 -180,0" />
+              </defs>
+              <text className="font-mono-label fill-foreground/50" fontSize="6.2" letterSpacing="3.4">
+                <textPath href="#hero-orbit">
+                  ✦ AVAILABLE FOR WORK · Q3 2026 · DESIGN + ENGINEERING · BENGALURU ·&nbsp;
+                </textPath>
+              </text>
+            </motion.svg>
+
+            {/* dashed frame back-plate */}
+            <div className="absolute -inset-3 rounded-[32px] border border-dashed border-foreground/25" />
+
+            {/* portrait card */}
             <motion.div
               style={{ rotateX: rX, rotateY: rY }}
-              className="tilt-card relative h-full w-full overflow-hidden rounded-[28px] border border-border shadow-[0_30px_60px_-20px_rgba(70,40,20,0.35)]"
+              className="tilt-card relative h-full w-full overflow-hidden rounded-[26px] border border-border shadow-[0_40px_80px_-30px_rgba(70,40,20,0.5)]"
             >
+              {/* duotone image */}
               <img
                 src={mainPhoto.url}
                 alt="D Sanket, software engineer"
                 width={1024}
-                height={1536}
+                height={1280}
                 className="h-full w-full object-cover"
+                style={{ filter: "contrast(1.05) saturate(0.95)" }}
               />
-              {/* film-noise gradient */}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
+              {/* ember wash */}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-ember/25 via-transparent to-cobalt/15 mix-blend-overlay" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
+
               {/* corner ticks */}
-              {(["top-3 left-3", "top-3 right-3", "bottom-3 left-3", "bottom-3 right-3"] as const).map((p) => (
+              {(["top-3 left-3","top-3 right-3","bottom-3 left-3","bottom-3 right-3"] as const).map((p) => (
                 <span
                   key={p}
-                  className={`absolute h-3 w-3 border-paper/70 ${p} ${
+                  className={`absolute h-3 w-3 border-paper/80 ${p} ${
                     p.includes("top") ? "border-t" : "border-b"
                   } ${p.includes("left") ? "border-l" : "border-r"}`}
                 />
               ))}
+
+              {/* top bar */}
               <div className="absolute inset-x-0 top-0 flex items-center gap-2 px-4 py-3 font-mono-label text-paper/85">
-                <span className="h-1.5 w-1.5 rounded-full bg-ember" />
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ember" />
                 <span>REC · 001</span>
-                <span className="ml-auto">2026</span>
+                <span className="mx-2 h-px flex-1 bg-paper/25" />
+                <span>4:5 · 2026</span>
               </div>
-              <div className="absolute inset-x-0 bottom-0 p-5">
-                <p className="font-mono-label text-paper/80">portrait / sanket.jpg</p>
-                <p className="font-display text-2xl text-paper">Sanket, Bengaluru</p>
+
+              {/* bottom caption */}
+              <div className="absolute inset-x-0 bottom-0 space-y-1 p-5">
+                <p className="font-mono-label text-paper/70">// cover subject</p>
+                <p className="font-display text-3xl leading-none text-paper">Sanket.</p>
+                <p className="font-mono-label text-paper/60">Bengaluru · IN</p>
+              </div>
+
+              {/* scanline */}
+              <motion.div
+                aria-hidden
+                initial={{ y: "-100%" }}
+                animate={{ y: "120%" }}
+                transition={{ duration: 6, repeat: Infinity, ease: "linear", repeatDelay: 3 }}
+                className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-transparent via-paper/10 to-transparent"
+              />
+            </motion.div>
+
+            {/* floating sticker — top-left */}
+            <motion.div
+              initial={{ opacity: 0, y: -10, rotate: -8 }}
+              animate={{ opacity: 1, y: 0, rotate: -8 }}
+              transition={{ delay: 1, duration: 0.6 }}
+              className="absolute -left-6 top-8 hidden rounded-2xl border border-border bg-card px-3 py-2 shadow-lg backdrop-blur sm:block"
+            >
+              <div className="flex items-center gap-2">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-ember/15 text-ember">
+                  <Sparkles className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className="font-mono-label leading-none text-muted-foreground">now playing</p>
+                  <p className="text-sm font-medium leading-tight">Design-led shipping</p>
+                </div>
               </div>
             </motion.div>
 
+            {/* floating sticker — right */}
+            <motion.div
+              initial={{ opacity: 0, y: 10, rotate: 6 }}
+              animate={{ opacity: 1, y: 0, rotate: 6 }}
+              transition={{ delay: 1.15, duration: 0.6 }}
+              className="absolute -right-6 bottom-24 hidden rounded-2xl border border-border bg-foreground px-3 py-2 text-paper shadow-lg sm:block"
+            >
+              <p className="font-mono-label leading-none text-paper/60">stack</p>
+              <p className="text-sm font-medium">React · Spring · SQL</p>
+            </motion.div>
+
+            {/* floating sticker — bottom center */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2, duration: 0.6 }}
-              className="absolute -right-4 bottom-16 hidden rotate-[5deg] items-center gap-2 rounded-full border border-border bg-ember px-4 py-2 text-paper shadow-lg sm:inline-flex"
+              transition={{ delay: 1.3, duration: 0.6 }}
+              className="absolute -bottom-5 left-1/2 -translate-x-1/2 rounded-full border border-border bg-background/90 px-4 py-1.5 shadow-md backdrop-blur"
             >
-              <Sparkles className="h-3.5 w-3.5" />
-              <span className="font-mono-label">design + code</span>
+              <span className="font-mono-label flex items-center gap-2">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-moss" />
+                </span>
+                available Q3 · 2026
+              </span>
             </motion.div>
+          </div>
+        </motion.div>
 
-            {/* spinning badge */}
-            <div className="animate-spin-slow absolute -bottom-6 -left-6 hidden h-24 w-24 sm:grid place-items-center rounded-full bg-foreground text-paper">
-              <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full">
-                <defs>
-                  <path id="circ" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0" />
-                </defs>
-                <text className="font-mono-label fill-paper" fontSize="9.5" letterSpacing="2">
-                  <textPath href="#circ">AVAILABLE FOR WORK · 2026 · AVAILABLE FOR WORK · </textPath>
-                </text>
-              </svg>
-              <span className="font-display text-2xl">✦</span>
+        {/* right rail — role card + stats */}
+        <motion.div
+          style={{ opacity: fade }}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.5 }}
+          className="col-span-12 order-3 lg:col-span-3 lg:pt-8"
+        >
+          <div className="rounded-2xl border border-border bg-card/70 p-4 backdrop-blur">
+            <p className="font-mono-label text-ember">// role</p>
+            <p className="mt-1 font-display text-2xl leading-tight">
+              Full-stack Engineer <span className="text-muted-foreground">+</span> Designer
+            </p>
+            <div className="mt-4 grid grid-cols-3 gap-3 border-t border-border pt-4">
+              <Stat n="4+" l="Years" />
+              <Stat n="10+" l="Shipped" />
+              <Stat n="5+" l="Certs" />
             </div>
+          </div>
+
+          <div className="mt-4 flex items-center gap-2">
+            <Social href="https://github.com/dsanket45/" label="GitHub"><Github className="h-4 w-4" /></Social>
+            <Social href="https://www.linkedin.com/in/sanket-d-39b735246/" label="LinkedIn"><Linkedin className="h-4 w-4" /></Social>
+            <Social href="https://x.com/D__Sanket/" label="X"><Twitter className="h-4 w-4" /></Social>
+            <Social href="https://www.instagram.com/thenameissanket_/" label="Instagram"><Instagram className="h-4 w-4" /></Social>
           </div>
         </motion.div>
       </div>
 
-      {/* bottom row: socials + scroll indicator */}
-      <div className="relative mx-auto mt-16 flex max-w-[1480px] flex-wrap items-center justify-between gap-4 border-t border-border px-6 pt-6 lg:mt-24 lg:px-12">
-        <div className="flex items-center gap-3">
-          <motion.span
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-            className="grid h-8 w-8 place-items-center rounded-full border border-border"
+      {/* GIANT WORDMARK — bottom word, reversed drift */}
+      <motion.div
+        style={{ x: wordXInv, y: yDown, opacity: fade }}
+        className="pointer-events-none relative mx-auto mt-2 flex max-w-[1520px] items-baseline justify-end px-4 lg:mt-4 lg:px-8"
+      >
+        <Reveal delay={0.2}>
+          <h2
+            aria-hidden
+            className="font-display italic text-[clamp(3.5rem,14vw,15rem)] leading-[0.82] tracking-[-0.03em] text-ember"
           >
-            <svg width="10" height="14" viewBox="0 0 10 14" fill="none">
-              <path d="M5 1v12M1 9l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </motion.span>
-          <p className="font-mono-label text-muted-foreground">scroll — the work</p>
+            engineered<span className="text-foreground/90">.</span>
+          </h2>
+        </Reveal>
+      </motion.div>
+
+      {/* in-hero marquee band */}
+      <div className="relative mt-10 overflow-hidden border-y border-border bg-background/40 py-3 backdrop-blur-sm lg:mt-14">
+        <div className="animate-marquee flex w-max items-center gap-10 font-mono-label text-foreground/70">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-10 pr-10">
+              {["Design → Code → Ship", "React · TypeScript · Spring Boot", "Available for Q3 2026", "Based in Bengaluru, IN", "Building with care", "Freelance · Full-time · Collabs"].map((t) => (
+                <span key={t} className="flex items-center gap-10">
+                  <span>{t}</span>
+                  <span className="text-ember">✦</span>
+                </span>
+              ))}
+            </div>
+          ))}
         </div>
-        <div className="flex items-center gap-1">
-          <Social href="https://github.com/dsanket45/" label="GitHub"><Github className="h-4 w-4" /></Social>
-          <Social href="https://www.linkedin.com/in/sanket-d-39b735246/" label="LinkedIn"><Linkedin className="h-4 w-4" /></Social>
-          <Social href="https://x.com/D__Sanket/" label="X"><Twitter className="h-4 w-4" /></Social>
-          <Social href="https://www.instagram.com/thenameissanket_/" label="Instagram"><Instagram className="h-4 w-4" /></Social>
-        </div>
+      </div>
+
+      {/* scroll indicator */}
+      <div className="relative mx-auto mt-6 flex max-w-[1520px] items-center justify-between gap-4 px-6 lg:px-12">
+        <p className="font-mono-label text-muted-foreground">scroll — the work</p>
+        <motion.span
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          className="grid h-9 w-9 place-items-center rounded-full border border-border bg-background/60 backdrop-blur"
+        >
+          <svg width="10" height="14" viewBox="0 0 10 14" fill="none">
+            <path d="M5 1v12M1 9l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </motion.span>
       </div>
     </section>
   );
