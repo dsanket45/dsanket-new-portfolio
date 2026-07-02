@@ -9,7 +9,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  Sparkles,
 } from "lucide-react";
 
 import mainPhoto from "@/assets/sanket-main.jpg.asset.json";
