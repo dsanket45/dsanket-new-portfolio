@@ -184,7 +184,7 @@ function Portfolio() {
   const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 22, mass: 0.4 });
   return (
     <div className="paper-grain min-h-screen bg-background text-foreground antialiased">
-      <Cursor />
+      
       <motion.div
         style={{ scaleX: progress, transformOrigin: "0% 50%" }}
         className="fixed left-0 right-0 top-0 z-[60] h-[3px] bg-ember"
