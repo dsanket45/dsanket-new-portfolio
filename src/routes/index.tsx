@@ -316,7 +316,7 @@ function Hero() {
     <section
       id="top"
       ref={ref}
-      className="relative overflow-hidden bg-paper pt-6 pb-10 lg:min-h-[100svh] lg:pt-8 lg:pb-16"
+      className="relative overflow-hidden bg-paper pt-28 pb-10 lg:min-h-[100svh] lg:pt-32 lg:pb-16"
     >
       {/* LIQUID ATMOSPHERE — occupies the left half, bleeds out */}
       <motion.div
