@@ -102,12 +102,6 @@
     color: var(--paper);
   }
 
-  /* hide native cursor only when fine pointer */
-  @media (pointer: fine) {
-    body.has-cursor, body.has-cursor a, body.has-cursor button {
-      cursor: none;
-    }
-  }
 }
 
 @utility font-display {

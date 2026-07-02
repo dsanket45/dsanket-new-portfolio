@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ContactForm } from "@/components/ContactForm";
-import { Cursor } from "@/components/Cursor";
+
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PROJECTS as PROJECT_LIST, CATEGORIES, type Project } from "@/data/projects";
@@ -184,7 +184,7 @@ function Portfolio() {
   const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 22, mass: 0.4 });
   return (
     <div className="paper-grain min-h-screen bg-background text-foreground antialiased">
-      <Cursor />
+      
       <motion.div
         style={{ scaleX: progress, transformOrigin: "0% 50%" }}
         className="fixed left-0 right-0 top-0 z-[60] h-[3px] bg-ember"
@@ -316,7 +316,7 @@ function Hero() {
     <section
       id="top"
       ref={ref}
-      className="relative overflow-hidden bg-paper pt-6 pb-10 lg:min-h-[100svh] lg:pt-8 lg:pb-16"
+      className="relative overflow-hidden bg-paper pt-28 pb-10 lg:min-h-[100svh] lg:pt-32 lg:pb-16"
     >
       {/* LIQUID ATMOSPHERE — occupies the left half, bleeds out */}
       <motion.div
