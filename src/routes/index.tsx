@@ -277,30 +277,17 @@ function Hero() {
     target: ref,
     offset: ["start start", "end start"],
   });
-  const yUp = useTransform(scrollYProgress, [0, 1], [0, -120]);
-  const yDown = useTransform(scrollYProgress, [0, 1], [0, 180]);
   const fade = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.2]);
+  const atmosY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
+  const atmosScale = useTransform(scrollYProgress, [0, 1], [1.02, 1.18]);
+  const headlineY = useTransform(scrollYProgress, [0, 1], [0, -80]);
+  const portraitY = useTransform(scrollYProgress, [0, 1], [0, 120]);
 
-  // pointer parallax
+  // cursor parallax on the portrait card
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const rX = useSpring(useTransform(my, [-1, 1], [8, -8]), { stiffness: 120, damping: 14 });
-  const rY = useSpring(useTransform(mx, [-1, 1], [-10, 10]), { stiffness: 120, damping: 14 });
-  const wordX = useSpring(useTransform(mx, [-1, 1], [30, -30]), { stiffness: 60, damping: 18 });
-  const wordXInv = useSpring(useTransform(mx, [-1, 1], [-40, 40]), { stiffness: 60, damping: 18 });
-  const bgPX = useSpring(useTransform(mx, [-1, 1], [-24, 24]), { stiffness: 40, damping: 20 });
-  const bgPY = useSpring(useTransform(my, [-1, 1], [-16, 16]), { stiffness: 40, damping: 20 });
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      mx.set((e.clientX / window.innerWidth - 0.5) * 2);
-      my.set((e.clientY / window.innerHeight - 0.5) * 2);
-    };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, [mx, my]);
+  const rX = useSpring(useTransform(my, [-1, 1], [6, -6]), { stiffness: 90, damping: 16 });
+  const rY = useSpring(useTransform(mx, [-1, 1], [-8, 8]), { stiffness: 90, damping: 16 });
 
   const [clock, setClock] = useState("");
   useEffect(() => {
@@ -316,72 +303,70 @@ function Hero() {
     return () => clearInterval(id);
   }, []);
 
+  // rotating role
+  const roles = useMemo(
+    () => ["Full-stack Engineer", "Product Designer", "React Craftsman", "Systems Thinker"],
+    [],
+  );
+  const [roleIdx, setRoleIdx] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setRoleIdx((i) => (i + 1) % roles.length), 2600);
+    return () => clearInterval(id);
+  }, [roles.length]);
+
   return (
     <section
       id="top"
       ref={ref}
-      className="relative overflow-hidden pt-24 pb-16 lg:min-h-[100svh] lg:pt-28 lg:pb-20"
+      className="relative overflow-hidden bg-paper pt-6 pb-10 lg:min-h-[100svh] lg:pt-8 lg:pb-16"
     >
-      {/* AURORA BACKDROP */}
+      {/* LIQUID ATMOSPHERE — occupies the left half, bleeds out */}
       <motion.div
         aria-hidden
-        style={{ y: bgY, scale: bgScale }}
+        style={{ y: atmosY, scale: atmosScale }}
         className="pointer-events-none absolute inset-0 -z-10"
       >
-        <motion.div style={{ x: bgPX, y: bgPY }} className="absolute inset-[-6%]">
-          <img
-            src={heroBg.url}
-            alt=""
-            className="h-full w-full object-cover opacity-[0.5] mix-blend-multiply"
-          />
-        </motion.div>
-        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/70 to-background" />
-        {/* aurora blobs */}
-        <motion.div
-          animate={{ x: [0, 40, -20, 0], y: [0, -30, 20, 0] }}
-          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-32 right-[-8%] h-[640px] w-[640px] rounded-full bg-ember/30 blur-[120px]"
+        <img
+          src={heroAtmos.url}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover opacity-[0.85]"
+          style={{ maskImage: "linear-gradient(to right, black 45%, transparent 78%)", WebkitMaskImage: "linear-gradient(to right, black 45%, transparent 78%)" }}
         />
-        <motion.div
-          animate={{ x: [0, -30, 30, 0], y: [0, 40, -20, 0] }}
-          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/3 left-[-10%] h-[540px] w-[540px] rounded-full bg-clay/30 blur-[120px]"
-        />
-        <motion.div
-          animate={{ x: [0, 30, -20, 0], y: [0, 20, -30, 0] }}
-          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-0 right-1/3 h-[460px] w-[460px] rounded-full bg-cobalt/20 blur-[120px]"
-        />
-        {/* subtle grid */}
+        {/* film grain via radial dot pattern */}
         <div
-          className="absolute inset-0 opacity-[0.15]"
+          className="absolute inset-0 opacity-[0.35] mix-blend-multiply"
           style={{
             backgroundImage:
-              "linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)",
-            backgroundSize: "80px 80px",
-            color: "var(--ink)",
-            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 80%)",
+              "radial-gradient(circle at 1px 1px, rgba(60,40,20,0.14) 1px, transparent 0)",
+            backgroundSize: "3px 3px",
+          }}
+        />
+        {/* soft cream vignette */}
+        <div className="absolute inset-0 bg-gradient-to-b from-paper/40 via-transparent to-paper" />
+        {/* faint editorial grid */}
+        <div
+          className="absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, var(--ink) 1px, transparent 1px)",
+            backgroundSize: "8.333% 100%",
           }}
         />
       </motion.div>
 
-      {/* MASTHEAD */}
+      {/* TOP EDITORIAL BAR */}
       <motion.div
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative mx-auto mb-8 flex max-w-[1520px] items-center justify-between gap-4 border-y border-border/60 bg-background/50 px-6 py-2.5 font-mono-label text-muted-foreground backdrop-blur-md lg:mb-10 lg:px-12"
+        className="relative mx-auto flex max-w-[1520px] items-center justify-between gap-3 px-5 pb-6 font-mono-label text-muted-foreground lg:px-10"
       >
-        <div className="flex items-center gap-3">
-          <span className="flex gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-ember/80" />
-            <span className="h-1.5 w-1.5 rounded-full bg-clay/80" />
-            <span className="h-1.5 w-1.5 rounded-full bg-moss/70" />
-          </span>
-          <span className="text-foreground">ISSUE №26</span>
-          <span className="hidden sm:inline">— Vol. IV · The Craft Edition</span>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <span className="h-1.5 w-1.5 rounded-full bg-ember" />
+          <span className="text-foreground">PORTFOLIO — 2026</span>
+          <span className="hidden text-muted-foreground/70 sm:inline">/ VOL. IV</span>
         </div>
-        <div className="hidden md:block">JUL · 2026</div>
+        <div className="hidden md:block">A study in craft, code &amp; composition</div>
         <div className="flex items-center gap-2">
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss opacity-75" />
@@ -391,111 +376,166 @@ function Hero() {
         </div>
       </motion.div>
 
-      {/* GIANT WORDMARK — top word */}
-      <motion.div
-        style={{ x: wordX, y: yUp, opacity: fade }}
-        className="pointer-events-none relative mx-auto max-w-[1520px] px-4 lg:px-8"
-      >
-        <Reveal delay={0.05}>
-          <h1
-            aria-hidden
-            className="font-display text-[clamp(4.5rem,17vw,18rem)] leading-[0.82] tracking-[-0.04em] text-foreground/95"
-          >
-            SANKET
-          </h1>
-        </Reveal>
-      </motion.div>
-
-      {/* CENTER STAGE — portrait + floating meta */}
-      <div className="relative mx-auto mt-2 grid max-w-[1520px] grid-cols-12 items-start gap-4 px-6 lg:mt-4 lg:px-12">
-        {/* left rail — role / bio */}
+      {/* MAIN GRID */}
+      <div className="relative mx-auto grid max-w-[1520px] grid-cols-12 items-center gap-8 px-5 lg:gap-12 lg:px-10">
+        {/* LEFT — kinetic headline */}
         <motion.div
-          style={{ opacity: fade }}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.4 }}
-          className="col-span-12 order-2 lg:order-1 lg:col-span-3 lg:pt-8"
+          style={{ y: headlineY, opacity: fade }}
+          className="col-span-12 lg:col-span-7"
         >
-          <p className="font-mono-label mb-3 text-ember">// the subject</p>
-          <p className="max-w-xs text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-            <strong className="text-foreground">D Sanket</strong>, full-stack
-            engineer &amp; designer. React, Spring Boot, and a stubborn eye for
-            craft. Building products that feel{" "}
-            <em className="italic text-foreground">inevitable</em>.
-          </p>
+          {/* eyebrow */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mb-6 flex items-center gap-3 font-mono-label text-muted-foreground"
+          >
+            <span className="h-px w-10 bg-foreground/60" />
+            <span>D. Sanket — Bengaluru, IN</span>
+          </motion.div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-3">
+          {/* the headline */}
+          <h1 className="font-display text-[clamp(3.2rem,10vw,10.5rem)] leading-[0.88] tracking-[-0.035em] text-foreground">
+            <WordReveal delay={0.05}>Software,</WordReveal>{" "}
+            <WordReveal delay={0.18}>
+              <em className="italic text-ember">engineered</em>
+            </WordReveal>
+            <br />
+            <WordReveal delay={0.32}>with a</WordReveal>{" "}
+            <WordReveal delay={0.44}>
+              <span className="relative inline-block">
+                designer&apos;s
+                <motion.span
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ delay: 1.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute -bottom-1 left-0 h-[3px] w-full origin-left bg-ember"
+                />
+              </span>
+            </WordReveal>{" "}
+            <WordReveal delay={0.58}>eye.</WordReveal>
+          </h1>
+
+          {/* subhead */}
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
+          >
+            I build fast, considered web products with{" "}
+            <span className="text-foreground">React</span>,{" "}
+            <span className="text-foreground">Spring Boot</span> and a stubborn
+            eye for typography, motion &amp; detail. Currently open for{" "}
+            <span className="ember-underline text-foreground">Q3 · 2026</span>.
+          </motion.p>
+
+          {/* CTAs + rotating role */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 1.1 }}
+            className="mt-9 flex flex-wrap items-center gap-4"
+          >
             <Magnetic>
               <a
                 href="#work"
                 data-cursor="view work"
-                className="group inline-flex items-center gap-3 rounded-full bg-foreground px-5 py-3 text-sm text-paper transition-all hover:bg-ember"
+                className="group inline-flex items-center gap-3 rounded-full bg-foreground px-6 py-3.5 text-sm text-paper transition-all hover:bg-ember"
               >
-                See the work
+                See selected work
                 <span className="grid h-6 w-6 place-items-center rounded-full bg-paper/15 transition-transform group-hover:rotate-45">
                   <ArrowUpRight className="h-3 w-3" />
                 </span>
               </a>
             </Magnetic>
-            <a href="#contact" className="group inline-flex items-center gap-1.5 text-sm">
-              <span className="ember-underline pb-0.5">say hi</span>
-              <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            <a
+              href="#contact"
+              className="group inline-flex items-center gap-2 rounded-full border border-foreground/20 px-5 py-3.5 text-sm text-foreground transition-colors hover:border-foreground/60"
+            >
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-moss" />
+              </span>
+              Start a project
             </a>
-          </div>
+
+            {/* rotating role */}
+            <div className="ml-auto hidden items-center gap-3 lg:flex">
+              <span className="font-mono-label text-muted-foreground">// currently</span>
+              <div className="relative h-6 min-w-[190px] overflow-hidden">
+                {roles.map((r, i) => (
+                  <motion.div
+                    key={r}
+                    initial={false}
+                    animate={{
+                      y: i === roleIdx ? 0 : i < roleIdx ? -28 : 28,
+                      opacity: i === roleIdx ? 1 : 0,
+                    }}
+                    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute inset-0 text-sm text-foreground"
+                  >
+                    {r}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* meta strip */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.9, delay: 1.35 }}
+            className="mt-14 grid max-w-2xl grid-cols-3 gap-6 border-t border-border pt-6"
+          >
+            <HeroStat n="4+" l="years shipping" />
+            <HeroStat n="10+" l="live products" />
+            <HeroStat n="∞" l="pixels moved" />
+          </motion.div>
         </motion.div>
 
-        {/* center — portrait */}
+        {/* RIGHT — cinematic portrait card */}
         <motion.div
-          style={{ opacity: fade }}
-          initial={{ opacity: 0, scale: 0.94 }}
+          style={{ y: portraitY, opacity: fade }}
+          initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-          className="col-span-12 order-1 lg:order-2 lg:col-span-6"
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          className="col-span-12 lg:col-span-5"
           onMouseMove={(e) => {
             const r = e.currentTarget.getBoundingClientRect();
             mx.set(((e.clientX - r.left) / r.width - 0.5) * 2);
             my.set(((e.clientY - r.top) / r.height - 0.5) * 2);
           }}
+          onMouseLeave={() => { mx.set(0); my.set(0); }}
         >
           <div
-            className="relative mx-auto aspect-[4/5] w-full max-w-[440px]"
-            style={{ perspective: 1200 }}
+            className="relative mx-auto aspect-[4/5] w-full max-w-[520px]"
+            style={{ perspective: 1400 }}
           >
-            {/* rotating orbit ring */}
-            <motion.svg
-              viewBox="0 0 200 200"
-              className="animate-spin-slow pointer-events-none absolute -inset-6"
-              aria-hidden
-            >
-              <defs>
-                <path id="hero-orbit" d="M100,100 m-90,0 a90,90 0 1,1 180,0 a90,90 0 1,1 -180,0" />
-              </defs>
-              <text className="font-mono-label fill-foreground/50" fontSize="6.2" letterSpacing="3.4">
-                <textPath href="#hero-orbit">
-                  ✦ AVAILABLE FOR WORK · Q3 2026 · DESIGN + ENGINEERING · BENGALURU ·&nbsp;
-                </textPath>
-              </text>
-            </motion.svg>
+            {/* offset shadow plate */}
+            <div className="absolute inset-0 translate-x-3 translate-y-4 rounded-[28px] bg-ember/20" />
+            {/* dashed frame */}
+            <div className="absolute -inset-3 rounded-[36px] border border-dashed border-foreground/25" />
 
-            {/* dashed frame back-plate */}
-            <div className="absolute -inset-3 rounded-[32px] border border-dashed border-foreground/25" />
-
-            {/* portrait card */}
+            {/* card */}
             <motion.div
               style={{ rotateX: rX, rotateY: rY }}
-              className="tilt-card relative h-full w-full overflow-hidden rounded-[26px] border border-border shadow-[0_40px_80px_-30px_rgba(70,40,20,0.5)]"
+              className="tilt-card group relative h-full w-full overflow-hidden rounded-[26px] border border-border bg-card shadow-[0_50px_100px_-40px_rgba(70,40,20,0.55)]"
             >
-              {/* duotone image */}
-              <img
+              <motion.img
                 src={mainPhoto.url}
-                alt="D Sanket, software engineer"
+                alt="D Sanket — full-stack engineer & designer"
                 width={1024}
                 height={1280}
+                initial={{ scale: 1.08 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
                 className="h-full w-full object-cover"
-                style={{ filter: "contrast(1.05) saturate(0.95)" }}
+                style={{ filter: "contrast(1.05) saturate(1.02)" }}
               />
-              {/* ember wash */}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-ember/25 via-transparent to-cobalt/15 mix-blend-overlay" />
+              {/* warm overlay */}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-ember/20 via-transparent to-transparent mix-blend-overlay" />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
 
               {/* corner ticks */}
@@ -509,128 +549,78 @@ function Hero() {
               ))}
 
               {/* top bar */}
-              <div className="absolute inset-x-0 top-0 flex items-center gap-2 px-4 py-3 font-mono-label text-paper/85">
+              <div className="absolute inset-x-0 top-0 flex items-center gap-2 px-5 py-4 font-mono-label text-paper/85">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ember" />
                 <span>REC · 001</span>
                 <span className="mx-2 h-px flex-1 bg-paper/25" />
-                <span>4:5 · 2026</span>
+                <span>4:5</span>
               </div>
 
               {/* bottom caption */}
-              <div className="absolute inset-x-0 bottom-0 space-y-1 p-5">
-                <p className="font-mono-label text-paper/70">// cover subject</p>
-                <p className="font-display text-3xl leading-none text-paper">Sanket.</p>
-                <p className="font-mono-label text-paper/60">Bengaluru · IN</p>
+              <div className="absolute inset-x-0 bottom-0 space-y-1 p-6">
+                <p className="font-mono-label text-paper/70">// the subject</p>
+                <div className="flex items-end justify-between gap-3">
+                  <p className="font-display text-4xl leading-none text-paper">Sanket.</p>
+                  <p className="font-mono-label pb-1 text-paper/70">EST. 2020</p>
+                </div>
               </div>
 
-              {/* scanline */}
+              {/* scanline sweep */}
               <motion.div
                 aria-hidden
                 initial={{ y: "-100%" }}
                 animate={{ y: "120%" }}
                 transition={{ duration: 6, repeat: Infinity, ease: "linear", repeatDelay: 3 }}
-                className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-transparent via-paper/10 to-transparent"
+                className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-transparent via-paper/12 to-transparent"
               />
             </motion.div>
 
-            {/* floating sticker — top-left */}
-            <motion.div
-              initial={{ opacity: 0, y: -10, rotate: -8 }}
-              animate={{ opacity: 1, y: 0, rotate: -8 }}
-              transition={{ delay: 1, duration: 0.6 }}
-              className="absolute -left-6 top-8 hidden rounded-2xl border border-border bg-card px-3 py-2 shadow-lg backdrop-blur sm:block"
+            {/* orbiting availability chip */}
+            <motion.svg
+              viewBox="0 0 200 200"
+              className="animate-spin-slow pointer-events-none absolute -right-8 -top-8 h-28 w-28 lg:h-32 lg:w-32"
+              aria-hidden
             >
-              <div className="flex items-center gap-2">
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-ember/15 text-ember">
-                  <Sparkles className="h-4 w-4" />
-                </span>
-                <div>
-                  <p className="font-mono-label leading-none text-muted-foreground">now playing</p>
-                  <p className="text-sm font-medium leading-tight">Design-led shipping</p>
-                </div>
-              </div>
-            </motion.div>
+              <defs>
+                <path id="hero-orbit-v2" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0" />
+              </defs>
+              <circle cx="100" cy="100" r="82" fill="var(--paper)" stroke="var(--foreground)" strokeOpacity="0.15" />
+              <text className="font-mono-label fill-foreground/80" fontSize="10.5" letterSpacing="3">
+                <textPath href="#hero-orbit-v2">
+                  ✦ AVAILABLE · Q3 · 2026 · REMOTE + BLR ·&nbsp;
+                </textPath>
+              </text>
+            </motion.svg>
 
-            {/* floating sticker — right */}
+            {/* stack sticker */}
             <motion.div
-              initial={{ opacity: 0, y: 10, rotate: 6 }}
-              animate={{ opacity: 1, y: 0, rotate: 6 }}
-              transition={{ delay: 1.15, duration: 0.6 }}
-              className="absolute -right-6 bottom-24 hidden rounded-2xl border border-border bg-foreground px-3 py-2 text-paper shadow-lg sm:block"
+              initial={{ opacity: 0, y: 12, rotate: 4 }}
+              animate={{ opacity: 1, y: 0, rotate: 4 }}
+              transition={{ delay: 1.2, duration: 0.6 }}
+              className="absolute -left-6 bottom-12 hidden rounded-2xl border border-border bg-foreground px-3.5 py-2.5 text-paper shadow-xl sm:block"
             >
               <p className="font-mono-label leading-none text-paper/60">stack</p>
-              <p className="text-sm font-medium">React · Spring · SQL</p>
+              <p className="mt-1 text-sm font-medium leading-tight">
+                React · TS · Spring · SQL
+              </p>
             </motion.div>
-
-            {/* floating sticker — bottom center */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.3, duration: 0.6 }}
-              className="absolute -bottom-5 left-1/2 -translate-x-1/2 rounded-full border border-border bg-background/90 px-4 py-1.5 shadow-md backdrop-blur"
-            >
-              <span className="font-mono-label flex items-center gap-2">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-moss" />
-                </span>
-                available Q3 · 2026
-              </span>
-            </motion.div>
-          </div>
-        </motion.div>
-
-        {/* right rail — role card + stats */}
-        <motion.div
-          style={{ opacity: fade }}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.5 }}
-          className="col-span-12 order-3 lg:col-span-3 lg:pt-8"
-        >
-          <div className="rounded-2xl border border-border bg-card/70 p-4 backdrop-blur">
-            <p className="font-mono-label text-ember">// role</p>
-            <p className="mt-1 font-display text-2xl leading-tight">
-              Full-stack Engineer <span className="text-muted-foreground">+</span> Designer
-            </p>
-            <div className="mt-4 grid grid-cols-3 gap-3 border-t border-border pt-4">
-              <Stat n="4+" l="Years" />
-              <Stat n="10+" l="Shipped" />
-              <Stat n="5+" l="Certs" />
-            </div>
-          </div>
-
-          <div className="mt-4 flex items-center gap-2">
-            <Social href="https://github.com/dsanket45/" label="GitHub"><Github className="h-4 w-4" /></Social>
-            <Social href="https://www.linkedin.com/in/sanket-d-39b735246/" label="LinkedIn"><Linkedin className="h-4 w-4" /></Social>
-            <Social href="https://x.com/D__Sanket/" label="X"><Twitter className="h-4 w-4" /></Social>
-            <Social href="https://www.instagram.com/thenameissanket_/" label="Instagram"><Instagram className="h-4 w-4" /></Social>
           </div>
         </motion.div>
       </div>
 
-      {/* GIANT WORDMARK — bottom word, reversed drift */}
-      <motion.div
-        style={{ x: wordXInv, y: yDown, opacity: fade }}
-        className="pointer-events-none relative mx-auto mt-2 flex max-w-[1520px] items-baseline justify-end px-4 lg:mt-4 lg:px-8"
-      >
-        <Reveal delay={0.2}>
-          <h2
-            aria-hidden
-            className="font-display italic text-[clamp(3.5rem,14vw,15rem)] leading-[0.82] tracking-[-0.03em] text-ember"
-          >
-            engineered<span className="text-foreground/90">.</span>
-          </h2>
-        </Reveal>
-      </motion.div>
-
-      {/* in-hero marquee band */}
-      <div className="relative mt-10 overflow-hidden border-y border-border bg-background/40 py-3 backdrop-blur-sm lg:mt-14">
-        <div className="animate-marquee flex w-max items-center gap-10 font-mono-label text-foreground/70">
+      {/* MARQUEE STRIP */}
+      <div className="relative mt-14 overflow-hidden border-y border-border/70 bg-background/40 py-3.5 backdrop-blur-sm lg:mt-20">
+        <div className="animate-marquee flex w-max items-center gap-12 font-display text-2xl text-foreground/80 sm:text-3xl">
           {Array.from({ length: 2 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-10 pr-10">
-              {["Design → Code → Ship", "React · TypeScript · Spring Boot", "Available for Q3 2026", "Based in Bengaluru, IN", "Building with care", "Freelance · Full-time · Collabs"].map((t) => (
-                <span key={t} className="flex items-center gap-10">
+            <div key={i} className="flex items-center gap-12 pr-12">
+              {[
+                "Design → Code → Ship",
+                "Available Q3 · 2026",
+                "React · TypeScript · Spring Boot",
+                "Based in Bengaluru",
+                "Building with care",
+              ].map((t) => (
+                <span key={t} className="flex items-center gap-12">
                   <span>{t}</span>
                   <span className="text-ember">✦</span>
                 </span>
@@ -640,9 +630,9 @@ function Hero() {
         </div>
       </div>
 
-      {/* scroll indicator */}
-      <div className="relative mx-auto mt-6 flex max-w-[1520px] items-center justify-between gap-4 px-6 lg:px-12">
-        <p className="font-mono-label text-muted-foreground">scroll — the work</p>
+      {/* SCROLL CUE */}
+      <div className="relative mx-auto mt-8 flex max-w-[1520px] items-center justify-between gap-4 px-5 lg:px-10">
+        <p className="font-mono-label text-muted-foreground">scroll — the work below</p>
         <motion.span
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
@@ -656,6 +646,31 @@ function Hero() {
     </section>
   );
 }
+
+function WordReveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  return (
+    <span className="reveal-mask">
+      <motion.span
+        initial={{ y: "110%" }}
+        animate={{ y: "0%" }}
+        transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
+        className="inline-block"
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
+}
+
+function HeroStat({ n, l }: { n: string; l: string }) {
+  return (
+    <div>
+      <p className="font-display text-3xl leading-none text-foreground sm:text-4xl">{n}</p>
+      <p className="font-mono-label mt-2 text-muted-foreground">{l}</p>
+    </div>
+  );
+}
+
 
 function Stat({ n, l }: { n: string; l: string }) {
   const ref = useRef<HTMLParagraphElement>(null);
