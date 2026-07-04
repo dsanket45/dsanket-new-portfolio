@@ -19,7 +19,7 @@ import jCode from "@/assets/journey-code.jpg.asset.json";
 import jProduct from "@/assets/journey-product.jpg.asset.json";
 import jCs from "@/assets/journey-cs.jpg.asset.json";
 import jMath from "@/assets/journey-math.jpg.asset.json";
-import heroCinema from "@/assets/hero-cinema.jpg.asset.json";
+import heroCity from "@/assets/hero-cityscape.jpg.asset.json";
 import contactBg from "@/assets/contact-bg.jpg.asset.json";
 
 const Github = (p: React.SVGProps<SVGSVGElement>) => (
