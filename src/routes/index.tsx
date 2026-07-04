@@ -276,372 +276,176 @@ function Hero() {
     target: ref,
     offset: ["start start", "end start"],
   });
-  const fade = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
-  const atmosY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
-  const atmosScale = useTransform(scrollYProgress, [0, 1], [1.02, 1.18]);
-  const headlineY = useTransform(scrollYProgress, [0, 1], [0, -80]);
-  const portraitY = useTransform(scrollYProgress, [0, 1], [0, 120]);
-
-  // cursor parallax on the portrait card
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const rX = useSpring(useTransform(my, [-1, 1], [6, -6]), { stiffness: 90, damping: 16 });
-  const rY = useSpring(useTransform(mx, [-1, 1], [-8, 8]), { stiffness: 90, damping: 16 });
-
-  const [clock, setClock] = useState("");
-  useEffect(() => {
-    const t = () =>
-      setClock(
-        new Date().toLocaleTimeString("en-IN", {
-          hour: "2-digit", minute: "2-digit", second: "2-digit",
-          hour12: false, timeZone: "Asia/Kolkata",
-        }),
-      );
-    t();
-    const id = setInterval(t, 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  // rotating role
-  const roles = useMemo(
-    () => ["Full-stack Engineer", "Product Designer", "React Craftsman", "Systems Thinker"],
-    [],
-  );
-  const [roleIdx, setRoleIdx] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setRoleIdx((i) => (i + 1) % roles.length), 2600);
-    return () => clearInterval(id);
-  }, [roles.length]);
+  const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.18]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
     <section
       id="top"
       ref={ref}
-      className="relative overflow-hidden bg-paper pt-28 pb-10 lg:min-h-[100svh] lg:pt-32 lg:pb-16"
+      className="relative isolate h-[100svh] min-h-[640px] w-full overflow-hidden bg-ink text-paper"
     >
-      {/* LIQUID ATMOSPHERE — occupies the left half, bleeds out */}
+      {/* FULL-BLEED CINEMATIC BACKGROUND */}
       <motion.div
         aria-hidden
-        style={{ y: atmosY, scale: atmosScale }}
-        className="pointer-events-none absolute inset-0 -z-10"
+        style={{ y: imgY, scale: imgScale }}
+        className="absolute inset-0 -z-10"
       >
         <img
-          src={heroAtmos.url}
+          src={heroCinema.url}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover opacity-[0.85]"
-          style={{ maskImage: "linear-gradient(to right, black 45%, transparent 78%)", WebkitMaskImage: "linear-gradient(to right, black 45%, transparent 78%)" }}
+          className="h-full w-full object-cover object-[65%_center] sm:object-center"
+          fetchPriority="high"
         />
-        {/* film grain via radial dot pattern */}
+        {/* cinematic gradient — dark left for legibility, image right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/55 to-ink/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
+        {/* grain */}
         <div
-          className="absolute inset-0 opacity-[0.35] mix-blend-multiply"
+          className="absolute inset-0 opacity-40 mix-blend-overlay"
           style={{
             backgroundImage:
-              "radial-gradient(circle at 1px 1px, rgba(60,40,20,0.14) 1px, transparent 0)",
+              "radial-gradient(circle at 1px 1px, rgba(255,240,220,0.09) 1px, transparent 0)",
             backgroundSize: "3px 3px",
           }}
         />
-        {/* soft cream vignette */}
-        <div className="absolute inset-0 bg-gradient-to-b from-paper/40 via-transparent to-paper" />
-        {/* faint editorial grid */}
-        <div
-          className="absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, var(--ink) 1px, transparent 1px)",
-            backgroundSize: "8.333% 100%",
-          }}
-        />
       </motion.div>
 
-      {/* TOP EDITORIAL BAR */}
+      {/* CENTER — headline block */}
       <motion.div
-        initial={{ opacity: 0, y: -6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="relative mx-auto flex max-w-[1520px] items-center justify-between gap-3 px-5 pb-6 font-mono-label text-muted-foreground lg:px-10"
+        style={{ y: contentY, opacity: contentOpacity }}
+        className="relative z-10 mx-auto flex h-full max-w-[1520px] flex-col justify-center px-6 pt-24 pb-40 lg:px-14 lg:pt-28"
       >
-        <div className="flex items-center gap-2 sm:gap-3">
-          <span className="h-1.5 w-1.5 rounded-full bg-ember" />
-          <span className="text-foreground">PORTFOLIO — 2026</span>
-          <span className="hidden text-muted-foreground/70 sm:inline">/ VOL. IV</span>
-        </div>
-        <div className="hidden md:block">A study in craft, code &amp; composition</div>
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss opacity-75" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-moss" />
-          </span>
-          <span>BLR · {clock}</span>
-        </div>
-      </motion.div>
-
-      {/* MAIN GRID */}
-      <div className="relative mx-auto grid max-w-[1520px] grid-cols-12 items-center gap-8 px-5 lg:gap-12 lg:px-10">
-        {/* LEFT — kinetic headline */}
-        <motion.div
-          style={{ y: headlineY, opacity: fade }}
-          className="col-span-12 lg:col-span-7"
-        >
+        <div className="max-w-3xl">
           {/* eyebrow */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="mb-6 flex items-center gap-3 font-mono-label text-muted-foreground"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mb-8 flex items-center gap-3 font-mono-label text-paper/70"
           >
-            <span className="h-px w-10 bg-foreground/60" />
-            <span>D. Sanket — Bengaluru, IN</span>
+            <span className="h-px w-10 bg-ember" />
+            <span>Full-stack Engineer · Designer</span>
           </motion.div>
 
-          {/* the headline */}
-          <h1 className="font-display text-[clamp(3.2rem,10vw,10.5rem)] leading-[0.88] tracking-[-0.035em] text-foreground">
-            <WordReveal delay={0.05}>Software,</WordReveal>{" "}
-            <WordReveal delay={0.18}>
-              <em className="italic text-ember">engineered</em>
+          {/* headline — big serif, editorial */}
+          <h1 className="font-display text-[clamp(3rem,9vw,9rem)] leading-[0.9] tracking-[-0.025em] text-paper">
+            <WordReveal delay={0.05}>Code that</WordReveal>{" "}
+            <WordReveal delay={0.2}>
+              <em className="italic text-ember-soft">feels</em>
             </WordReveal>
             <br />
-            <WordReveal delay={0.32}>with a</WordReveal>{" "}
-            <WordReveal delay={0.44}>
+            <WordReveal delay={0.35}>designed.</WordReveal>{" "}
+            <WordReveal delay={0.5}>
+              <em className="italic text-ember-soft">Design</em>
+            </WordReveal>
+            <br />
+            <WordReveal delay={0.65}>that</WordReveal>{" "}
+            <WordReveal delay={0.78}>
               <span className="relative inline-block">
-                designer&apos;s
+                ships.
                 <motion.span
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  transition={{ delay: 1.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: 1.4, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
                   className="absolute -bottom-1 left-0 h-[3px] w-full origin-left bg-ember"
                 />
               </span>
-            </WordReveal>{" "}
-            <WordReveal delay={0.58}>eye.</WordReveal>
+            </WordReveal>
           </h1>
 
           {/* subhead */}
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-            className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
+            transition={{ duration: 0.8, delay: 1.0 }}
+            className="mt-8 max-w-xl text-base leading-relaxed text-paper/75 sm:text-lg"
           >
-            I build fast, considered web products with{" "}
-            <span className="text-foreground">React</span>,{" "}
-            <span className="text-foreground">Spring Boot</span> and a stubborn
-            eye for typography, motion &amp; detail. Currently open for{" "}
-            <span className="ember-underline text-foreground">Q3 · 2026</span>.
+            I&apos;m Sanket — I build fast, considered web products with
+            React, Spring Boot and a stubborn eye for craft.
           </motion.p>
 
-          {/* CTAs + rotating role */}
+          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 1.1 }}
-            className="mt-9 flex flex-wrap items-center gap-4"
+            transition={{ duration: 0.7, delay: 1.2 }}
+            className="mt-10 flex flex-wrap items-center gap-4"
           >
             <Magnetic>
               <a
                 href="#work"
-                data-cursor="view work"
-                className="group inline-flex items-center gap-3 rounded-full bg-foreground px-6 py-3.5 text-sm text-paper transition-all hover:bg-ember"
+                className="group inline-flex items-center gap-3 rounded-full bg-paper px-6 py-3.5 text-sm text-ink transition-all hover:bg-ember hover:text-paper"
               >
-                See selected work
-                <span className="grid h-6 w-6 place-items-center rounded-full bg-paper/15 transition-transform group-hover:rotate-45">
+                View my work
+                <span className="grid h-6 w-6 place-items-center rounded-full bg-ink/10 transition-transform group-hover:rotate-45 group-hover:bg-paper/20">
                   <ArrowUpRight className="h-3 w-3" />
                 </span>
               </a>
             </Magnetic>
             <a
               href="#contact"
-              className="group inline-flex items-center gap-2 rounded-full border border-foreground/20 px-5 py-3.5 text-sm text-foreground transition-colors hover:border-foreground/60"
+              className="group inline-flex items-center gap-2 rounded-full border border-paper/25 px-5 py-3.5 text-sm text-paper transition-colors hover:border-paper/70"
             >
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-moss" />
               </span>
-              Start a project
+              Available Q3 · 2026
             </a>
-
-            {/* rotating role */}
-            <div className="ml-auto hidden items-center gap-3 lg:flex">
-              <span className="font-mono-label text-muted-foreground">// currently</span>
-              <div className="relative h-6 min-w-[190px] overflow-hidden">
-                {roles.map((r, i) => (
-                  <motion.div
-                    key={r}
-                    initial={false}
-                    animate={{
-                      y: i === roleIdx ? 0 : i < roleIdx ? -28 : 28,
-                      opacity: i === roleIdx ? 1 : 0,
-                    }}
-                    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute inset-0 text-sm text-foreground"
-                  >
-                    {r}
-                  </motion.div>
-                ))}
-              </div>
-            </div>
           </motion.div>
-
-          {/* meta strip */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.9, delay: 1.35 }}
-            className="mt-14 grid max-w-2xl grid-cols-3 gap-6 border-t border-border pt-6"
-          >
-            <HeroStat n="4+" l="years shipping" />
-            <HeroStat n="10+" l="live products" />
-            <HeroStat n="∞" l="pixels moved" />
-          </motion.div>
-        </motion.div>
-
-        {/* RIGHT — cinematic portrait card */}
-        <motion.div
-          style={{ y: portraitY, opacity: fade }}
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          className="col-span-12 lg:col-span-5"
-          onMouseMove={(e) => {
-            const r = e.currentTarget.getBoundingClientRect();
-            mx.set(((e.clientX - r.left) / r.width - 0.5) * 2);
-            my.set(((e.clientY - r.top) / r.height - 0.5) * 2);
-          }}
-          onMouseLeave={() => { mx.set(0); my.set(0); }}
-        >
-          <div
-            className="relative mx-auto aspect-[4/5] w-full max-w-[520px]"
-            style={{ perspective: 1400 }}
-          >
-            {/* offset shadow plate */}
-            <div className="absolute inset-0 translate-x-3 translate-y-4 rounded-[28px] bg-ember/20" />
-            {/* dashed frame */}
-            <div className="absolute -inset-3 rounded-[36px] border border-dashed border-foreground/25" />
-
-            {/* card */}
-            <motion.div
-              style={{ rotateX: rX, rotateY: rY }}
-              className="tilt-card group relative h-full w-full overflow-hidden rounded-[26px] border border-border bg-card shadow-[0_50px_100px_-40px_rgba(70,40,20,0.55)]"
-            >
-              <motion.img
-                src={mainPhoto.url}
-                alt="D Sanket — full-stack engineer & designer"
-                width={1024}
-                height={1280}
-                initial={{ scale: 1.08 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
-                className="h-full w-full object-cover"
-                style={{ filter: "contrast(1.05) saturate(1.02)" }}
-              />
-              {/* warm overlay */}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-ember/20 via-transparent to-transparent mix-blend-overlay" />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
-
-              {/* corner ticks */}
-              {(["top-3 left-3","top-3 right-3","bottom-3 left-3","bottom-3 right-3"] as const).map((p) => (
-                <span
-                  key={p}
-                  className={`absolute h-3 w-3 border-paper/80 ${p} ${
-                    p.includes("top") ? "border-t" : "border-b"
-                  } ${p.includes("left") ? "border-l" : "border-r"}`}
-                />
-              ))}
-
-              {/* top bar */}
-              <div className="absolute inset-x-0 top-0 flex items-center gap-2 px-5 py-4 font-mono-label text-paper/85">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ember" />
-                <span>REC · 001</span>
-                <span className="mx-2 h-px flex-1 bg-paper/25" />
-                <span>4:5</span>
-              </div>
-
-              {/* bottom caption */}
-              <div className="absolute inset-x-0 bottom-0 space-y-1 p-6">
-                <p className="font-mono-label text-paper/70">// the subject</p>
-                <div className="flex items-end justify-between gap-3">
-                  <p className="font-display text-4xl leading-none text-paper">Sanket.</p>
-                  <p className="font-mono-label pb-1 text-paper/70">EST. 2020</p>
-                </div>
-              </div>
-
-              {/* scanline sweep */}
-              <motion.div
-                aria-hidden
-                initial={{ y: "-100%" }}
-                animate={{ y: "120%" }}
-                transition={{ duration: 6, repeat: Infinity, ease: "linear", repeatDelay: 3 }}
-                className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-transparent via-paper/12 to-transparent"
-              />
-            </motion.div>
-
-            {/* orbiting availability chip */}
-            <motion.svg
-              viewBox="0 0 200 200"
-              className="animate-spin-slow pointer-events-none absolute -right-8 -top-8 h-28 w-28 lg:h-32 lg:w-32"
-              aria-hidden
-            >
-              <defs>
-                <path id="hero-orbit-v2" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0" />
-              </defs>
-              <circle cx="100" cy="100" r="82" fill="var(--paper)" stroke="var(--foreground)" strokeOpacity="0.15" />
-              <text className="font-mono-label fill-foreground/80" fontSize="10.5" letterSpacing="3">
-                <textPath href="#hero-orbit-v2">
-                  ✦ AVAILABLE · Q3 · 2026 · REMOTE + BLR ·&nbsp;
-                </textPath>
-              </text>
-            </motion.svg>
-
-            {/* stack sticker */}
-            <motion.div
-              initial={{ opacity: 0, y: 12, rotate: 4 }}
-              animate={{ opacity: 1, y: 0, rotate: 4 }}
-              transition={{ delay: 1.2, duration: 0.6 }}
-              className="absolute -left-6 bottom-12 hidden rounded-2xl border border-border bg-foreground px-3.5 py-2.5 text-paper shadow-xl sm:block"
-            >
-              <p className="font-mono-label leading-none text-paper/60">stack</p>
-              <p className="mt-1 text-sm font-medium leading-tight">
-                React · TS · Spring · SQL
-              </p>
-            </motion.div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* MARQUEE STRIP */}
-      <div className="relative mt-14 overflow-hidden border-y border-border/70 bg-background/40 py-3.5 backdrop-blur-sm lg:mt-20">
-        <div className="animate-marquee flex w-max items-center gap-12 font-display text-2xl text-foreground/80 sm:text-3xl">
-          {Array.from({ length: 2 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-12 pr-12">
-              {[
-                "Design → Code → Ship",
-                "Available Q3 · 2026",
-                "React · TypeScript · Spring Boot",
-                "Based in Bengaluru",
-                "Building with care",
-              ].map((t) => (
-                <span key={t} className="flex items-center gap-12">
-                  <span>{t}</span>
-                  <span className="text-ember">✦</span>
-                </span>
-              ))}
-            </div>
-          ))}
         </div>
-      </div>
+      </motion.div>
 
-      {/* SCROLL CUE */}
-      <div className="relative mx-auto mt-8 flex max-w-[1520px] items-center justify-between gap-4 px-5 lg:px-10">
-        <p className="font-mono-label text-muted-foreground">scroll — the work below</p>
-        <motion.span
+      {/* BOTTOM BAR — tagline + socials */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, delay: 1.4 }}
+        className="absolute inset-x-0 bottom-0 z-10"
+      >
+        {/* thin divider */}
+        <div className="mx-6 h-px bg-paper/15 lg:mx-14" />
+        <div className="mx-auto flex max-w-[1520px] flex-wrap items-center justify-between gap-4 px-6 py-6 lg:px-14">
+          <p className="font-mono-label text-paper/70">
+            Crafting web experiences where code meets composition
+          </p>
+          <div className="flex items-center gap-5 text-paper/70">
+            <a href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub" className="transition-colors hover:text-paper">
+              <Github className="h-4 w-4" />
+            </a>
+            <a href="https://linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="transition-colors hover:text-paper">
+              <Linkedin className="h-4 w-4" />
+            </a>
+            <a href="https://instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram" className="transition-colors hover:text-paper">
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a href="https://x.com/" target="_blank" rel="noreferrer" aria-label="X" className="transition-colors hover:text-paper">
+              <Twitter className="h-4 w-4" />
+            </a>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* subtle scroll cue */}
+      <motion.div
+        aria-hidden
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.8, duration: 0.8 }}
+        className="pointer-events-none absolute bottom-24 right-6 z-10 hidden lg:block"
+      >
+        <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          className="grid h-9 w-9 place-items-center rounded-full border border-border bg-background/60 backdrop-blur"
+          className="font-mono-label flex flex-col items-center gap-2 text-paper/60"
         >
-          <svg width="10" height="14" viewBox="0 0 10 14" fill="none">
-            <path d="M5 1v12M1 9l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </motion.span>
-      </div>
+          <span className="[writing-mode:vertical-rl]">scroll</span>
+          <span className="h-8 w-px bg-paper/40" />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
@@ -661,14 +465,6 @@ function WordReveal({ children, delay = 0 }: { children: React.ReactNode; delay?
   );
 }
 
-function HeroStat({ n, l }: { n: string; l: string }) {
-  return (
-    <div>
-      <p className="font-display text-3xl leading-none text-foreground sm:text-4xl">{n}</p>
-      <p className="font-mono-label mt-2 text-muted-foreground">{l}</p>
-    </div>
-  );
-}
 
 
 function Stat({ n, l }: { n: string; l: string }) {
