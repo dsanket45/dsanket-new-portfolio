@@ -222,20 +222,21 @@ function Nav() {
 
   return (
     <header
-      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-500 ${
+      data-scrolled={scrolled}
+      className={`group/nav fixed left-0 right-0 top-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "border-b border-border/60 bg-background/75 backdrop-blur-xl"
-          : "border-b border-transparent"
+          ? "border-b border-border/60 bg-background/80 text-foreground backdrop-blur-xl"
+          : "border-b border-transparent text-paper"
       }`}
     >
       <div className="mx-auto flex max-w-[1480px] items-center justify-between px-6 py-4 lg:px-12">
         <a href="#top" className="flex items-center gap-3" data-cursor="home">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-foreground text-paper">
+          <span className={`grid h-9 w-9 place-items-center rounded-full transition-colors ${scrolled ? "bg-foreground text-paper" : "bg-paper text-ink"}`}>
             <span className="font-display text-lg leading-none">ds</span>
           </span>
           <span className="hidden flex-col leading-tight sm:flex">
             <span className="font-display text-base">D Sanket</span>
-            <span className="font-mono-label text-muted-foreground">
+            <span className={`font-mono-label ${scrolled ? "text-muted-foreground" : "text-paper/60"}`}>
               Software Engineer · IND
             </span>
           </span>
@@ -246,7 +247,7 @@ function Nav() {
             <a
               key={href}
               href={href}
-              className="group relative rounded-full px-4 py-2 text-sm text-foreground/80 transition-colors hover:text-foreground"
+              className={`group relative rounded-full px-4 py-2 text-sm transition-colors ${scrolled ? "text-foreground/80 hover:text-foreground" : "text-paper/80 hover:text-paper"}`}
             >
               {label}
               <span className="pointer-events-none absolute inset-x-4 -bottom-0.5 h-px origin-left scale-x-0 bg-ember transition-transform duration-300 group-hover:scale-x-100" />
@@ -257,9 +258,9 @@ function Nav() {
         <a
           href="#contact"
           data-cursor="say hi"
-          className="group inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm text-paper transition-all hover:bg-ember"
+          className={`group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm transition-all ${scrolled ? "bg-foreground text-paper hover:bg-ember" : "bg-paper text-ink hover:bg-ember hover:text-paper"}`}
         >
-          Let's talk
+          Let&apos;s talk
           <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </a>
       </div>
