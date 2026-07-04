@@ -278,29 +278,51 @@ function Hero() {
   const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
   const imgScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.18]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -60]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
+
+  // cursor parallax on portrait card
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const rX = useSpring(useTransform(my, [-1, 1], [8, -8]), { stiffness: 90, damping: 16 });
+  const rY = useSpring(useTransform(mx, [-1, 1], [-10, 10]), { stiffness: 90, damping: 16 });
+
+  // live IST clock
+  const [clock, setClock] = useState("");
+  useEffect(() => {
+    const t = () =>
+      setClock(
+        new Date().toLocaleTimeString("en-IN", {
+          hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kolkata",
+        }),
+      );
+    t();
+    const id = setInterval(t, 1000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <section
       id="top"
       ref={ref}
-      className="relative isolate h-[100svh] min-h-[640px] w-full overflow-hidden bg-ink text-paper"
+      className="relative isolate min-h-[100svh] w-full overflow-hidden bg-ink text-paper"
     >
-      {/* FULL-BLEED CINEMATIC BACKGROUND */}
+      {/* FULL-BLEED CITYSCAPE BACKGROUND */}
       <motion.div
         aria-hidden
         style={{ y: imgY, scale: imgScale }}
         className="absolute inset-0 -z-10"
       >
         <img
-          src={heroCinema.url}
+          src={heroCity.url}
           alt=""
-          className="h-full w-full object-cover object-[65%_center] sm:object-center"
+          className="h-full w-full object-cover"
           fetchPriority="high"
         />
-        {/* cinematic gradient — dark left for legibility, image right */}
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/55 to-ink/10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
+        {/* brighter warm veil — no more inky darkness */}
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/40 to-ink/15" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/20 to-ink/35" />
+        {/* warm amber wash to lift the shadows */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_35%,rgba(232,148,88,0.28),transparent_55%)]" />
         {/* grain */}
         <div
           className="absolute inset-0 opacity-40 mix-blend-overlay"
@@ -312,12 +334,27 @@ function Hero() {
         />
       </motion.div>
 
-      {/* CENTER — headline block */}
+      {/* floating aurora blobs for extra motion */}
+      <motion.div
+        aria-hidden
+        animate={{ x: [0, 40, 0], y: [0, -30, 0] }}
+        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute -left-24 top-1/3 h-96 w-96 rounded-full bg-ember/25 blur-[120px]"
+      />
+      <motion.div
+        aria-hidden
+        animate={{ x: [0, -30, 0], y: [0, 40, 0] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute -right-24 bottom-1/4 h-[28rem] w-[28rem] rounded-full bg-cobalt/20 blur-[140px]"
+      />
+
+      {/* MAIN GRID */}
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-10 mx-auto flex h-full max-w-[1520px] flex-col justify-center px-6 pt-24 pb-40 lg:px-14 lg:pt-28"
+        className="relative z-10 mx-auto grid min-h-[100svh] max-w-[1520px] grid-cols-12 items-center gap-8 px-6 pt-28 pb-32 lg:gap-14 lg:px-14 lg:pt-32 lg:pb-28"
       >
-        <div className="max-w-3xl">
+        {/* LEFT — headline */}
+        <div className="col-span-12 lg:col-span-7">
           {/* eyebrow */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -326,11 +363,10 @@ function Hero() {
             className="mb-8 flex items-center gap-3 font-mono-label text-paper/70"
           >
             <span className="h-px w-10 bg-ember" />
-            <span>Full-stack Engineer · Designer</span>
+            <span>Full-stack Engineer · Designer · BLR {clock}</span>
           </motion.div>
 
-          {/* headline — big serif, editorial */}
-          <h1 className="font-display text-[clamp(3rem,9vw,9rem)] leading-[0.9] tracking-[-0.025em] text-paper">
+          <h1 className="font-display text-[clamp(2.8rem,8vw,8rem)] leading-[0.92] tracking-[-0.025em] text-paper">
             <WordReveal delay={0.05}>Code that</WordReveal>{" "}
             <WordReveal delay={0.2}>
               <em className="italic text-ember-soft">feels</em>
@@ -355,18 +391,16 @@ function Hero() {
             </WordReveal>
           </h1>
 
-          {/* subhead */}
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.0 }}
-            className="mt-8 max-w-xl text-base leading-relaxed text-paper/75 sm:text-lg"
+            className="mt-8 max-w-xl text-base leading-relaxed text-paper/80 sm:text-lg"
           >
             I&apos;m Sanket — I build fast, considered web products with
             React, Spring Boot and a stubborn eye for craft.
           </motion.p>
 
-          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -386,7 +420,7 @@ function Hero() {
             </Magnetic>
             <a
               href="#contact"
-              className="group inline-flex items-center gap-2 rounded-full border border-paper/25 px-5 py-3.5 text-sm text-paper transition-colors hover:border-paper/70"
+              className="group inline-flex items-center gap-2 rounded-full border border-paper/25 bg-paper/5 px-5 py-3.5 text-sm text-paper backdrop-blur-sm transition-colors hover:border-paper/70 hover:bg-paper/10"
             >
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss opacity-75" />
@@ -396,18 +430,119 @@ function Hero() {
             </a>
           </motion.div>
         </div>
+
+        {/* RIGHT — floating portrait card */}
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
+          className="col-span-12 lg:col-span-5"
+          onMouseMove={(e) => {
+            const r = e.currentTarget.getBoundingClientRect();
+            mx.set(((e.clientX - r.left) / r.width - 0.5) * 2);
+            my.set(((e.clientY - r.top) / r.height - 0.5) * 2);
+          }}
+          onMouseLeave={() => { mx.set(0); my.set(0); }}
+        >
+          <div
+            className="relative mx-auto aspect-[4/5] w-full max-w-[440px]"
+            style={{ perspective: 1400 }}
+          >
+            {/* offset ember plate */}
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-0 translate-x-3 translate-y-4 rounded-[28px] bg-ember/40"
+            />
+            {/* dashed frame */}
+            <div className="absolute -inset-3 rounded-[36px] border border-dashed border-paper/25" />
+
+            {/* card */}
+            <motion.div
+              style={{ rotateX: rX, rotateY: rY }}
+              className="tilt-card relative h-full w-full overflow-hidden rounded-[26px] border border-paper/15 bg-ink shadow-[0_50px_120px_-30px_rgba(0,0,0,0.7)]"
+            >
+              <motion.img
+                src={mainPhoto.url}
+                alt="D Sanket"
+                initial={{ scale: 1.1 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+                className="h-full w-full object-cover"
+                style={{ filter: "contrast(1.05) saturate(1.05)" }}
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-ember/25 via-transparent to-transparent mix-blend-overlay" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent" />
+
+              {/* corner ticks */}
+              {(["top-3 left-3","top-3 right-3","bottom-3 left-3","bottom-3 right-3"] as const).map((p) => (
+                <span
+                  key={p}
+                  className={`absolute h-3 w-3 border-paper/80 ${p} ${p.includes("top") ? "border-t" : "border-b"} ${p.includes("left") ? "border-l" : "border-r"}`}
+                />
+              ))}
+
+              {/* bottom caption */}
+              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
+                <div>
+                  <p className="font-mono-label text-paper/70">the subject</p>
+                  <p className="font-display text-3xl leading-none text-paper">Sanket.</p>
+                </div>
+                <p className="font-mono-label pb-1 text-paper/60">EST · 2020</p>
+              </div>
+
+              {/* scanline sweep */}
+              <motion.div
+                aria-hidden
+                initial={{ y: "-100%" }}
+                animate={{ y: "120%" }}
+                transition={{ duration: 6, repeat: Infinity, ease: "linear", repeatDelay: 3 }}
+                className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-transparent via-paper/15 to-transparent"
+              />
+            </motion.div>
+
+            {/* orbiting availability ring */}
+            <motion.svg
+              viewBox="0 0 200 200"
+              className="animate-spin-slow pointer-events-none absolute -right-6 -top-6 h-24 w-24 lg:h-28 lg:w-28"
+              aria-hidden
+            >
+              <defs>
+                <path id="hero-orbit" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0" />
+              </defs>
+              <circle cx="100" cy="100" r="82" fill="var(--ink)" stroke="var(--paper)" strokeOpacity="0.2" />
+              <text className="font-mono-label fill-paper/85" fontSize="11" letterSpacing="3">
+                <textPath href="#hero-orbit">
+                  ✦ AVAILABLE · Q3 · 2026 · REMOTE + BLR ·&nbsp;
+                </textPath>
+              </text>
+            </motion.svg>
+
+            {/* stack sticker */}
+            <motion.div
+              initial={{ opacity: 0, y: 12, rotate: -4 }}
+              animate={{ opacity: 1, y: 0, rotate: -4 }}
+              transition={{ delay: 1.2, duration: 0.6 }}
+              className="absolute -left-4 bottom-14 hidden rounded-2xl border border-paper/15 bg-paper px-3.5 py-2.5 text-ink shadow-xl sm:block"
+            >
+              <p className="font-mono-label leading-none text-ink/60">stack</p>
+              <p className="mt-1 text-sm font-medium leading-tight">
+                React · TS · Spring
+              </p>
+            </motion.div>
+          </div>
+        </motion.div>
       </motion.div>
 
-      {/* BOTTOM BAR — tagline + socials */}
+      {/* BOTTOM BAR */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 1.4 }}
         className="absolute inset-x-0 bottom-0 z-10"
       >
-        {/* thin divider */}
         <div className="mx-6 h-px bg-paper/15 lg:mx-14" />
-        <div className="mx-auto flex max-w-[1520px] flex-wrap items-center justify-between gap-4 px-6 py-6 lg:px-14">
+        <div className="mx-auto flex max-w-[1520px] flex-wrap items-center justify-between gap-4 px-6 py-5 lg:px-14">
           <p className="font-mono-label text-paper/70">
             Crafting web experiences where code meets composition
           </p>
@@ -427,27 +562,10 @@ function Hero() {
           </div>
         </div>
       </motion.div>
-
-      {/* subtle scroll cue */}
-      <motion.div
-        aria-hidden
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.8, duration: 0.8 }}
-        className="pointer-events-none absolute bottom-24 right-6 z-10 hidden lg:block"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          className="font-mono-label flex flex-col items-center gap-2 text-paper/60"
-        >
-          <span className="[writing-mode:vertical-rl]">scroll</span>
-          <span className="h-8 w-px bg-paper/40" />
-        </motion.div>
-      </motion.div>
     </section>
   );
 }
+
 
 function WordReveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   return (
