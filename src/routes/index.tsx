@@ -19,7 +19,7 @@ import jCode from "@/assets/journey-code.jpg.asset.json";
 import jProduct from "@/assets/journey-product.jpg.asset.json";
 import jCs from "@/assets/journey-cs.jpg.asset.json";
 import jMath from "@/assets/journey-math.jpg.asset.json";
-
+import heroWallpaper from "@/assets/hero-wallpaper.jpg.asset.json";
 import contactBg from "@/assets/contact-bg.jpg.asset.json";
 
 const Github = (p: React.SVGProps<SVGSVGElement>) => (
@@ -313,13 +313,14 @@ function Hero() {
         style={{ y: imgY, scale: imgScale }}
         className="absolute inset-0 -z-10"
       >
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(120% 90% at 10% 10%, #2a1b3d 0%, transparent 55%), radial-gradient(120% 90% at 90% 20%, #3d1f2a 0%, transparent 60%), radial-gradient(120% 90% at 80% 100%, #14243d 0%, transparent 55%), linear-gradient(160deg, #0e0b1a 0%, #17111f 55%, #0b0d18 100%)",
-          }}
+        <img
+          src={heroWallpaper.url}
+          alt=""
+          className="h-full w-full object-cover"
+          fetchPriority="high"
         />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/70 via-ink/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-transparent to-ink/40" />
         <div
           className="absolute inset-0 opacity-[0.18] mix-blend-overlay"
           style={{
