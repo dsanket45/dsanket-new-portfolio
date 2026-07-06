@@ -19,7 +19,7 @@ import jCode from "@/assets/journey-code.jpg.asset.json";
 import jProduct from "@/assets/journey-product.jpg.asset.json";
 import jCs from "@/assets/journey-cs.jpg.asset.json";
 import jMath from "@/assets/journey-math.jpg.asset.json";
-import heroCity from "@/assets/hero-cityscape.jpg.asset.json";
+
 import contactBg from "@/assets/contact-bg.jpg.asset.json";
 
 const Github = (p: React.SVGProps<SVGSVGElement>) => (
@@ -307,46 +307,62 @@ function Hero() {
       ref={ref}
       className="relative isolate min-h-[100svh] w-full overflow-hidden bg-ink text-paper"
     >
-      {/* FULL-BLEED CITYSCAPE BACKGROUND */}
+      {/* WALLPAPER-ART BACKGROUND — pure CSS, instant, silky smooth */}
       <motion.div
         aria-hidden
         style={{ y: imgY, scale: imgScale }}
         className="absolute inset-0 -z-10"
       >
-        <img
-          src={heroCity.url}
-          alt=""
-          className="h-full w-full object-cover"
-          fetchPriority="high"
-        />
-        {/* brighter warm veil — no more inky darkness */}
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/40 to-ink/15" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/20 to-ink/35" />
-        {/* warm amber wash to lift the shadows */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_35%,rgba(232,148,88,0.28),transparent_55%)]" />
-        {/* grain */}
+        {/* base deep gradient */}
         <div
-          className="absolute inset-0 opacity-40 mix-blend-overlay"
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(120% 90% at 10% 10%, #2a1b3d 0%, transparent 55%), radial-gradient(120% 90% at 90% 20%, #3d1f2a 0%, transparent 60%), radial-gradient(120% 90% at 80% 100%, #14243d 0%, transparent 55%), linear-gradient(160deg, #0e0b1a 0%, #17111f 55%, #0b0d18 100%)",
+          }}
+        />
+        {/* soft grain */}
+        <div
+          className="absolute inset-0 opacity-[0.18] mix-blend-overlay"
           style={{
             backgroundImage:
-              "radial-gradient(circle at 1px 1px, rgba(255,240,220,0.09) 1px, transparent 0)",
+              "radial-gradient(circle at 1px 1px, rgba(255,240,220,0.35) 1px, transparent 0)",
             backgroundSize: "3px 3px",
           }}
         />
+        {/* subtle vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.55))]" />
       </motion.div>
 
-      {/* floating aurora blobs for extra motion */}
+      {/* animated aurora blobs — the "wallpaper" motion */}
       <motion.div
         aria-hidden
-        animate={{ x: [0, 40, 0], y: [0, -30, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute -left-24 top-1/3 h-96 w-96 rounded-full bg-ember/25 blur-[120px]"
+        animate={{ x: [0, 60, -20, 0], y: [0, -40, 20, 0], scale: [1, 1.15, 0.95, 1] }}
+        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute -left-32 top-10 h-[36rem] w-[36rem] rounded-full bg-ember/35 blur-[140px]"
       />
       <motion.div
         aria-hidden
-        animate={{ x: [0, -30, 0], y: [0, 40, 0] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute -right-24 bottom-1/4 h-[28rem] w-[28rem] rounded-full bg-cobalt/20 blur-[140px]"
+        animate={{ x: [0, -50, 30, 0], y: [0, 50, -20, 0], scale: [1, 0.9, 1.1, 1] }}
+        transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute -right-32 top-1/3 h-[40rem] w-[40rem] rounded-full bg-cobalt/40 blur-[160px]"
+      />
+      <motion.div
+        aria-hidden
+        animate={{ x: [0, 30, -30, 0], y: [0, -20, 30, 0], scale: [1, 1.1, 0.95, 1] }}
+        transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute left-1/3 -bottom-40 h-[34rem] w-[34rem] rounded-full bg-[oklch(0.55_0.18_320)]/30 blur-[150px]"
+      />
+      {/* fine mesh lines for editorial texture */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.6) 1px, transparent 1px)",
+          backgroundSize: "80px 80px",
+          maskImage: "radial-gradient(ellipse at center, black 40%, transparent 80%)",
+        }}
       />
 
       {/* MAIN GRID */}
