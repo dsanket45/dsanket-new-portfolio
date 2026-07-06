@@ -313,7 +313,6 @@ function Hero() {
         style={{ y: imgY, scale: imgScale }}
         className="absolute inset-0 -z-10"
       >
-        {/* base deep gradient */}
         <div
           className="absolute inset-0"
           style={{
@@ -321,7 +320,6 @@ function Hero() {
               "radial-gradient(120% 90% at 10% 10%, #2a1b3d 0%, transparent 55%), radial-gradient(120% 90% at 90% 20%, #3d1f2a 0%, transparent 60%), radial-gradient(120% 90% at 80% 100%, #14243d 0%, transparent 55%), linear-gradient(160deg, #0e0b1a 0%, #17111f 55%, #0b0d18 100%)",
           }}
         />
-        {/* soft grain */}
         <div
           className="absolute inset-0 opacity-[0.18] mix-blend-overlay"
           style={{
@@ -330,7 +328,6 @@ function Hero() {
             backgroundSize: "3px 3px",
           }}
         />
-        {/* subtle vignette */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.55))]" />
       </motion.div>
 
@@ -353,7 +350,6 @@ function Hero() {
         transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
         className="pointer-events-none absolute left-1/3 -bottom-40 h-[34rem] w-[34rem] rounded-full bg-[oklch(0.55_0.18_320)]/30 blur-[150px]"
       />
-      {/* fine mesh lines for editorial texture */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
