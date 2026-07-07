@@ -838,24 +838,30 @@ function SkillBar({ name, pct }: { name: string; pct: number }) {
 
 function About() {
   return (
-    <section id="about" className="relative py-28 lg:py-40">
+    <section id="about" className="relative py-24 lg:py-36">
       <div className="mx-auto max-w-[1480px] px-6 lg:px-12">
         <SectionLabel n="04" title="about" />
 
-        <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <div className="sticky top-28">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] border border-border">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] border border-border bg-card shadow-[0_28px_90px_-55px_rgba(0,0,0,0.45)]">
                 <img
-                  src={aboutPhoto.url}
-                  alt="Editorial portrait"
+                  src={mainPhoto.url}
+                  alt="D Sanket portrait"
                   loading="lazy"
-                  className="h-full w-full object-cover"
+                  decoding="async"
+                  className="h-full w-full object-cover object-center"
                 />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3 text-paper">
+                  <p className="font-display text-3xl leading-none">D Sanket</p>
+                  <p className="font-mono-label text-paper/75">BLR · IN</p>
+                </div>
               </div>
               <div className="mt-4 flex items-center justify-between">
-                <p className="font-mono-label text-muted-foreground">002 / studio</p>
-                <p className="font-mono-label text-muted-foreground">bengaluru, in</p>
+                <p className="font-mono-label text-muted-foreground">portrait / profile</p>
+                <p className="font-mono-label text-muted-foreground">engineer + designer</p>
               </div>
             </div>
           </div>
