@@ -274,7 +274,7 @@ function Hero() {
   return (
     <section
       id="top"
-      className="relative isolate min-h-[92svh] w-full overflow-hidden bg-ink text-paper sm:min-h-[96svh]"
+      className="relative isolate min-h-[88svh] w-full overflow-hidden bg-ink text-paper sm:min-h-[92svh]"
     >
       <div aria-hidden className="absolute inset-0 -z-10">
         <img
@@ -318,49 +318,37 @@ function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 mx-auto flex min-h-[92svh] max-w-[1520px] flex-col justify-center px-6 pb-20 pt-28 sm:min-h-[96svh] lg:px-14 lg:pt-30"
+        className="relative z-10 mx-auto flex min-h-[88svh] max-w-[1520px] flex-col justify-center px-6 pb-18 pt-20 sm:min-h-[92svh] sm:pt-24 lg:px-14 lg:pt-24"
       >
         <div className="max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="mb-7 flex flex-wrap items-center gap-3 font-mono-label text-paper/72"
+            className="mb-5 flex flex-wrap items-center gap-3 font-mono-label text-paper/72 sm:mb-7"
           >
             <span className="h-px w-10 bg-ember" />
             <span>Full-stack Engineer · UI craft · Bengaluru</span>
           </motion.div>
 
-          <h1 className="font-display text-[clamp(3.15rem,12vw,9.2rem)] leading-[0.9] text-paper drop-shadow-[0_18px_50px_rgba(0,0,0,0.35)]">
-            <WordReveal delay={0.05}>Fast</WordReveal>{" "}
-            <WordReveal delay={0.2}>
-              <em className="italic text-ember-soft">software.</em>
-            </WordReveal>
+          <motion.h1
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            className="font-display text-[clamp(3.25rem,11vw,9.2rem)] leading-[0.9] text-paper drop-shadow-[0_18px_50px_rgba(0,0,0,0.35)]"
+          >
+            Fast <em className="italic text-ember-soft">software.</em>
             <br />
-            <WordReveal delay={0.35}>Sharp</WordReveal>{" "}
-            <WordReveal delay={0.5}>
-              <em className="italic text-ember-soft">interfaces.</em>
-            </WordReveal>
+            Sharp <em className="italic text-ember-soft">interfaces.</em>
             <br />
-            <WordReveal delay={0.65}>Built</WordReveal>{" "}
-            <WordReveal delay={0.78}>
-              <span className="relative inline-block">
-                to ship.
-                <motion.span
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 1.4, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                  className="absolute -bottom-1 left-0 h-[3px] w-full origin-left bg-ember"
-                />
-              </span>
-            </WordReveal>
-          </h1>
+            Built <span className="relative inline-block">to ship.<span className="absolute -bottom-1 left-0 h-[3px] w-full bg-ember" /></span>
+          </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.0 }}
-            className="mt-7 max-w-2xl text-base leading-relaxed text-paper/82 sm:text-xl"
+            transition={{ duration: 0.75, delay: 0.35 }}
+            className="mt-6 max-w-2xl text-base leading-relaxed text-paper/82 sm:mt-7 sm:text-xl"
           >
             I&apos;m Sanket — I turn product ideas into clean, performant web experiences with React, Spring Boot, and a designer&apos;s eye for the details users feel.
           </motion.p>
@@ -368,8 +356,8 @@ function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 1.2 }}
-            className="mt-10 flex flex-wrap items-center gap-3 sm:gap-4"
+            transition={{ duration: 0.7, delay: 0.48 }}
+            className="mt-8 flex flex-wrap items-center gap-3 sm:mt-10 sm:gap-4"
           >
             <Magnetic>
               <a
@@ -399,7 +387,7 @@ function Hero() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, delay: 1.4 }}
+        transition={{ duration: 0.75, delay: 0.6 }}
         className="absolute inset-x-0 bottom-0 z-10 hidden sm:block"
       >
         <div className="mx-6 h-px bg-paper/15 lg:mx-14" />
@@ -426,23 +414,6 @@ function Hero() {
     </section>
   );
 }
-
-
-function WordReveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  return (
-    <span className="reveal-mask">
-      <motion.span
-        initial={{ y: "110%" }}
-        animate={{ y: "0%" }}
-        transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
-        className="inline-block"
-      >
-        {children}
-      </motion.span>
-    </span>
-  );
-}
-
 
 
 function Stat({ n, l }: { n: string; l: string }) {
