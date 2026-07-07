@@ -225,7 +225,7 @@ function Nav() {
       data-scrolled={scrolled}
       className={`group/nav fixed left-0 right-0 top-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "border-b border-border/60 bg-background/80 text-foreground backdrop-blur-xl"
+          ? "border-b border-border/60 bg-background/95 text-foreground shadow-sm"
           : "border-b border-transparent text-paper"
       }`}
     >
@@ -507,26 +507,7 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 }
 
 function Magnetic({ children }: { children: React.ReactNode }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 200, damping: 15 });
-  const sy = useSpring(y, { stiffness: 200, damping: 15 });
-  return (
-    <motion.span
-      ref={ref}
-      style={{ x: sx, y: sy }}
-      className="inline-block"
-      onMouseMove={(e) => {
-        const r = ref.current!.getBoundingClientRect();
-        x.set((e.clientX - r.left - r.width / 2) * 0.3);
-        y.set((e.clientY - r.top - r.height / 2) * 0.3);
-      }}
-      onMouseLeave={() => { x.set(0); y.set(0); }}
-    >
-      {children}
-    </motion.span>
-  );
+  return <span className="inline-block">{children}</span>;
 }
 
 /* ---------- marquee ---------- */
@@ -584,7 +565,7 @@ function ServiceCard({ s, i }: { s: (typeof SERVICES)[number]; i: number }) {
       className="group relative overflow-hidden rounded-[28px] border border-border bg-card p-8 transition-all hover:border-ember/50 lg:p-10"
       data-cursor="explore"
     >
-      <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-ember/0 blur-3xl transition-all duration-700 group-hover:bg-ember/20" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-ember/0 transition-colors duration-500 group-hover:bg-ember/80" />
       <div className="flex items-start justify-between">
         <span className="font-mono-label text-ember">{s.n}</span>
         <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all duration-500 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-ember" />
@@ -605,14 +586,6 @@ function ServiceCard({ s, i }: { s: (typeof SERVICES)[number]; i: number }) {
 /* ---------- gallery ---------- */
 
 function Gallery() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y1 = useTransform(scrollYProgress, [0, 1], [80, -80]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [-40, 40]);
-  const y3 = useTransform(scrollYProgress, [0, 1], [100, -100]);
-  const y4 = useTransform(scrollYProgress, [0, 1], [-60, 60]);
-  const y5 = useTransform(scrollYProgress, [0, 1], [60, -60]);
-
   const frames = [
     { src: shot1.url, label: "portrait · 2024", caption: "Light is a co-author." },
     { src: jCode.url, label: "the editor · 2025", caption: "Where the work happens." },
@@ -620,10 +593,8 @@ function Gallery() {
     { src: jProduct.url, label: "process · 2024", caption: "Always sketching first." },
     { src: shot3.url, label: "frame · 2023", caption: "An eye for composition." },
   ];
-  const ys = [y1, y2, y3, y4, y5];
-
   return (
-    <section ref={ref} className="relative overflow-hidden bg-card py-28 lg:py-40">
+    <section className="relative overflow-hidden bg-card py-24 lg:py-36">
       <div className="mx-auto max-w-[1480px] px-6 lg:px-12">
         <SectionLabel n="01" title="frames" />
         <div className="mt-8 grid grid-cols-1 items-end gap-6 lg:grid-cols-12">
@@ -647,7 +618,6 @@ function Gallery() {
             return (
               <motion.figure
                 key={f.label}
-                style={{ y: ys[i] }}
                 className={`group relative overflow-hidden rounded-[20px] border border-border bg-paper ${layouts[i]}`}
               >
                 <img
