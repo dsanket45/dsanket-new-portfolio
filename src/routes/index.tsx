@@ -314,35 +314,20 @@ function Hero() {
         }}
       />
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 mx-auto flex min-h-[88svh] max-w-[1520px] flex-col justify-center px-6 pb-18 pt-20 sm:min-h-[92svh] sm:pt-24 lg:px-14 lg:pt-24"
-      >
+      <div className="relative z-10 mx-auto flex min-h-[88svh] max-w-[1520px] flex-col justify-center px-6 pb-18 pt-16 sm:min-h-[92svh] sm:pt-20 lg:px-14 lg:pt-18">
         <div className="max-w-6xl">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="mb-5 flex flex-wrap items-center gap-3 font-mono-label text-paper/72 sm:mb-7"
-          >
+          <div className="mb-5 flex flex-wrap items-center gap-3 font-mono-label text-paper/72 sm:mb-7">
             <span className="h-px w-10 bg-ember" />
             <span>Full-stack Engineer · UI craft · Bengaluru</span>
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display text-[clamp(3.25rem,11vw,9.2rem)] leading-[0.9] text-paper drop-shadow-[0_18px_50px_rgba(0,0,0,0.35)]"
-          >
+          <h1 className="font-display text-[clamp(3.25rem,11vw,9.2rem)] leading-[0.9] text-paper drop-shadow-[0_18px_50px_rgba(0,0,0,0.35)]">
             Fast <em className="italic text-ember-soft">software.</em>
             <br />
             Sharp <em className="italic text-ember-soft">interfaces.</em>
             <br />
             Built <span className="relative inline-block">to ship.<span className="absolute -bottom-1 left-0 h-[3px] w-full bg-ember" /></span>
-          </motion.h1>
+          </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 14 }}
@@ -382,7 +367,7 @@ function Hero() {
             </a>
           </motion.div>
         </div>
-      </motion.div>
+      </div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
