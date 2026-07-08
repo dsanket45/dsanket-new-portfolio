@@ -9,6 +9,15 @@ import {
   Mail,
   Phone,
   MapPin,
+  Sparkles,
+  Code2,
+  Palette,
+  Rocket,
+  Zap,
+  Layers,
+  Star,
+  Coffee,
+  Compass,
 } from "lucide-react";
 
 import mainPhoto from "@/assets/sanket-main.jpg.asset.json";
@@ -77,10 +86,10 @@ const STACKS = [
 ];
 
 const SERVICES = [
-  { n: "01", t: "Web Development", b: "Production-grade React + Spring Boot apps. Type-safe, tested, deployed.", tags: ["React", "Spring Boot", "Vite"] },
-  { n: "02", t: "UI / UX Design",  b: "Editorial, motion-led interfaces. From wireframe to ready-for-handoff in Figma.", tags: ["Figma", "Motion", "Systems"] },
-  { n: "03", t: "API & Systems",   b: "REST and event-driven APIs, schema design, performance and observability.", tags: ["REST", "MySQL", "Docker"] },
-  { n: "04", t: "Brand & Visuals", b: "Identity, typography, photo retouching — the visual layer for digital products.", tags: ["Identity", "Photo", "Type"] },
+  { n: "01", t: "Web Development", b: "Production-grade React + Spring Boot apps. Type-safe, tested, deployed.", tags: ["React", "Spring Boot", "Vite"], icon: Code2 },
+  { n: "02", t: "UI / UX Design",  b: "Editorial, motion-led interfaces. From wireframe to ready-for-handoff in Figma.", tags: ["Figma", "Motion", "Systems"], icon: Palette },
+  { n: "03", t: "API & Systems",   b: "REST and event-driven APIs, schema design, performance and observability.", tags: ["REST", "MySQL", "Docker"], icon: Layers },
+  { n: "04", t: "Brand & Visuals", b: "Identity, typography, photo retouching — the visual layer for digital products.", tags: ["Identity", "Photo", "Type"], icon: Sparkles },
 ];
 
 // Projects come from shared data so the index list and detail pages stay in sync.
@@ -274,8 +283,9 @@ function Hero() {
   return (
     <section
       id="top"
-      className="relative isolate min-h-[88svh] w-full overflow-hidden bg-ink text-paper sm:min-h-[92svh]"
+      className="relative isolate min-h-[92svh] w-full overflow-hidden bg-ink text-paper"
     >
+      {/* --- background layers --- */}
       <div aria-hidden className="absolute inset-0 -z-10">
         <img
           src={heroWallpaper.url}
@@ -284,56 +294,163 @@ function Hero() {
           fetchPriority="high"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/72 via-ink/30 to-ink/10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/78 via-transparent to-paper/10" />
-        <div
-          className="absolute inset-0 opacity-70"
-          style={{
-            background:
-              "radial-gradient(circle at 76% 18%, rgba(232,168,96,0.28), transparent 24%), radial-gradient(circle at 18% 72%, rgba(70,105,190,0.22), transparent 28%)",
-          }}
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/78 via-ink/40 to-ink/15" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-transparent to-paper/8" />
+
+        {/* animated aurora blobs */}
+        <motion.div
+          aria-hidden
+          className="absolute -top-32 -left-24 h-[520px] w-[520px] rounded-full bg-ember/25 blur-[140px]"
+          animate={{ x: [0, 60, -20, 0], y: [0, 40, -30, 0], scale: [1, 1.1, 0.95, 1] }}
+          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
         />
+        <motion.div
+          aria-hidden
+          className="absolute top-1/3 -right-32 h-[560px] w-[560px] rounded-full bg-cobalt/25 blur-[160px]"
+          animate={{ x: [0, -70, 30, 0], y: [0, -40, 40, 0], scale: [1, 1.15, 0.9, 1] }}
+          transition={{ duration: 32, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          aria-hidden
+          className="absolute bottom-[-140px] left-1/3 h-[420px] w-[420px] rounded-full bg-clay/20 blur-[130px]"
+          animate={{ x: [0, 50, -50, 0], y: [0, -30, 20, 0], scale: [1, 1.08, 0.98, 1] }}
+          transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* grain */}
         <div
-          className="absolute inset-0 opacity-[0.12] mix-blend-overlay"
+          className="absolute inset-0 opacity-[0.14] mix-blend-overlay"
           style={{
             backgroundImage:
               "radial-gradient(circle at 1px 1px, rgba(255,240,220,0.35) 1px, transparent 0)",
             backgroundSize: "3px 3px",
           }}
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_42%,rgba(0,0,0,0.48))]" />
+        {/* vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_44%,rgba(0,0,0,0.55))]" />
       </div>
+
+      {/* faint editorial grid */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.045]"
+        className="pointer-events-none absolute inset-0 opacity-[0.05]"
         style={{
           backgroundImage:
             "linear-gradient(to right, rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.6) 1px, transparent 1px)",
           backgroundSize: "80px 80px",
-          maskImage: "radial-gradient(ellipse at center, black 40%, transparent 80%)",
+          maskImage: "radial-gradient(ellipse at center, black 40%, transparent 82%)",
         }}
       />
 
-      <div className="relative z-10 mx-auto flex min-h-[88svh] max-w-[1520px] flex-col justify-center px-6 pb-18 pt-16 sm:min-h-[92svh] sm:pt-20 lg:px-14 lg:pt-18">
-        <div className="max-w-6xl">
-          <div className="mb-5 flex flex-wrap items-center gap-3 font-mono-label text-paper/72 sm:mb-7">
-            <span className="h-px w-10 bg-ember" />
-            <span>Full-stack Engineer · UI craft · Bengaluru</span>
-          </div>
+      {/* floating decorative icon chips */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute right-[8%] top-[22%] hidden lg:block"
+        animate={{ y: [0, -14, 0], rotate: [0, 6, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <div className="flex items-center gap-2 rounded-full border border-paper/20 bg-paper/8 px-4 py-2 text-paper/85 backdrop-blur-sm">
+          <Code2 className="h-4 w-4 text-ember-soft" />
+          <span className="font-mono-label">clean code</span>
+        </div>
+      </motion.div>
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute right-[14%] top-[42%] hidden lg:block"
+        animate={{ y: [0, 12, 0], rotate: [0, -5, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+      >
+        <div className="flex items-center gap-2 rounded-full border border-ember/40 bg-ember/15 px-4 py-2 text-ember-soft backdrop-blur-sm">
+          <Palette className="h-4 w-4" />
+          <span className="font-mono-label">designer&apos;s eye</span>
+        </div>
+      </motion.div>
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute right-[6%] top-[62%] hidden lg:block"
+        animate={{ y: [0, -10, 0], rotate: [0, 4, 0] }}
+        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      >
+        <div className="flex items-center gap-2 rounded-full border border-paper/20 bg-paper/8 px-4 py-2 text-paper/85 backdrop-blur-sm">
+          <Rocket className="h-4 w-4 text-ember-soft" />
+          <span className="font-mono-label">ships fast</span>
+        </div>
+      </motion.div>
 
-          <h1 className="font-display text-[clamp(3.25rem,11vw,9.2rem)] leading-[0.9] text-paper drop-shadow-[0_18px_50px_rgba(0,0,0,0.35)]">
-            Fast <em className="italic text-ember-soft">software.</em>
-            <br />
-            Sharp <em className="italic text-ember-soft">interfaces.</em>
-            <br />
-            Built <span className="relative inline-block">to ship.<span className="absolute -bottom-1 left-0 h-[3px] w-full bg-ember" /></span>
+      {/* twinkling stars */}
+      {[
+        { x: "12%", y: "18%", d: 0 },
+        { x: "38%", y: "12%", d: 0.6 },
+        { x: "72%", y: "24%", d: 1.2 },
+        { x: "22%", y: "62%", d: 0.3 },
+        { x: "58%", y: "72%", d: 0.9 },
+      ].map((s, i) => (
+        <motion.div
+          key={i}
+          aria-hidden
+          className="pointer-events-none absolute"
+          style={{ left: s.x, top: s.y }}
+          animate={{ opacity: [0.15, 0.85, 0.15], scale: [0.8, 1.15, 0.8] }}
+          transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut", delay: s.d }}
+        >
+          <Star className="h-3 w-3 fill-ember-soft/70 text-ember-soft/70" />
+        </motion.div>
+      ))}
+
+      {/* --- content --- */}
+      <div className="relative z-10 mx-auto flex min-h-[92svh] max-w-[1520px] flex-col justify-center px-6 pb-24 pt-20 sm:pt-24 lg:px-14">
+        <div className="max-w-6xl">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="mb-6 flex flex-wrap items-center gap-3 font-mono-label text-paper/78 sm:mb-8"
+          >
+            <span className="h-px w-10 bg-ember" />
+            <Sparkles className="h-3.5 w-3.5 text-ember" />
+            <span>Full-stack Engineer · UI craft · Bengaluru</span>
+          </motion.div>
+
+          <h1 className="font-display text-[clamp(3.25rem,11vw,9.2rem)] leading-[0.9] text-paper drop-shadow-[0_18px_50px_rgba(0,0,0,0.4)]">
+            <motion.span
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="block"
+            >
+              Fast <em className="italic text-ember-soft">software.</em>
+            </motion.span>
+            <motion.span
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
+              className="block"
+            >
+              Sharp <em className="italic text-ember-soft">interfaces.</em>
+            </motion.span>
+            <motion.span
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.24 }}
+              className="block"
+            >
+              Built <span className="relative inline-block">to ship.
+                <motion.span
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 1.1 }}
+                  style={{ transformOrigin: "left" }}
+                  className="absolute -bottom-1 left-0 h-[3px] w-full bg-ember"
+                />
+              </span>
+            </motion.span>
           </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.35 }}
-            className="mt-6 max-w-2xl text-base leading-relaxed text-paper/82 sm:mt-7 sm:text-xl"
+            transition={{ duration: 0.75, delay: 0.5 }}
+            className="mt-7 max-w-2xl text-base leading-relaxed text-paper/85 sm:text-xl"
           >
             I&apos;m Sanket — I turn product ideas into clean, performant web experiences with React, Spring Boot, and a designer&apos;s eye for the details users feel.
           </motion.p>
@@ -341,23 +458,21 @@ function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.48 }}
-            className="mt-8 flex flex-wrap items-center gap-3 sm:mt-10 sm:gap-4"
+            transition={{ duration: 0.7, delay: 0.62 }}
+            className="mt-9 flex flex-wrap items-center gap-3 sm:gap-4"
           >
-            <Magnetic>
-              <a
-                href="#work"
-                className="group inline-flex items-center gap-3 rounded-full bg-paper px-6 py-3.5 text-sm text-ink transition-all hover:bg-ember hover:text-paper"
-              >
-                View my work
-                <span className="grid h-6 w-6 place-items-center rounded-full bg-ink/10 transition-transform group-hover:rotate-45 group-hover:bg-paper/20">
-                  <ArrowUpRight className="h-3 w-3" />
-                </span>
-              </a>
-            </Magnetic>
+            <a
+              href="#work"
+              className="group inline-flex items-center gap-3 rounded-full bg-paper px-6 py-3.5 text-sm text-ink transition-all hover:bg-ember hover:text-paper hover:shadow-[0_20px_50px_-15px_rgba(232,168,96,0.6)]"
+            >
+              View my work
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-ink/10 transition-transform group-hover:rotate-45 group-hover:bg-paper/20">
+                <ArrowUpRight className="h-3 w-3" />
+              </span>
+            </a>
             <a
               href="#contact"
-              className="group inline-flex items-center gap-2 rounded-full border border-paper/25 bg-paper/8 px-5 py-3.5 text-sm text-paper transition-colors hover:border-paper/70 hover:bg-paper/12"
+              className="group inline-flex items-center gap-2 rounded-full border border-paper/25 bg-paper/8 px-5 py-3.5 text-sm text-paper backdrop-blur-sm transition-colors hover:border-paper/70 hover:bg-paper/14"
             >
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss opacity-75" />
@@ -366,13 +481,37 @@ function Hero() {
               Available Q3 · 2026
             </a>
           </motion.div>
+
+          {/* mini stat strip */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="mt-12 grid max-w-2xl grid-cols-3 gap-4 border-t border-paper/15 pt-6 sm:mt-14 sm:gap-8"
+          >
+            {[
+              { icon: Zap, k: "40+", l: "shipped" },
+              { icon: Coffee, k: "5y", l: "building" },
+              { icon: Compass, k: "1:1", l: "design ↔ code" },
+            ].map((s) => (
+              <div key={s.l} className="flex items-center gap-3">
+                <span className="grid h-9 w-9 place-items-center rounded-full border border-paper/20 bg-paper/8 text-ember-soft">
+                  <s.icon className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className="font-display text-2xl leading-none text-paper">{s.k}</p>
+                  <p className="font-mono-label mt-1 text-paper/60">{s.l}</p>
+                </div>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.75, delay: 0.6 }}
+        transition={{ duration: 0.75, delay: 0.9 }}
         className="absolute inset-x-0 bottom-0 z-10 hidden sm:block"
       >
         <div className="mx-6 h-px bg-paper/15 lg:mx-14" />
@@ -522,8 +661,14 @@ function ServiceCard({ s, i }: { s: (typeof SERVICES)[number]; i: number }) {
       data-cursor="explore"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-ember/0 transition-colors duration-500 group-hover:bg-ember/80" />
+      <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-ember/0 blur-3xl transition-all duration-700 group-hover:bg-ember/25" />
       <div className="flex items-start justify-between">
-        <span className="font-mono-label text-ember">{s.n}</span>
+        <div className="flex items-center gap-3">
+          <span className="grid h-11 w-11 place-items-center rounded-2xl border border-border bg-background text-ember transition-all duration-500 group-hover:-rotate-6 group-hover:border-ember/60 group-hover:bg-ember/10">
+            <s.icon className="h-5 w-5" />
+          </span>
+          <span className="font-mono-label text-ember">{s.n}</span>
+        </div>
         <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all duration-500 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-ember" />
       </div>
       <h3 className="mt-8 font-display text-4xl leading-[1.05] sm:text-5xl">
@@ -1640,10 +1785,19 @@ function Quotes() {
 
 function SectionLabel({ n, title }: { n: string; title: string }) {
   return (
-    <div className="flex items-center gap-4">
+    <motion.div
+      initial={{ opacity: 0, x: -10 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="flex items-center gap-4"
+    >
+      <span className="grid h-6 w-6 place-items-center rounded-full bg-ember/12 text-ember">
+        <Sparkles className="h-3 w-3" />
+      </span>
       <span className="font-mono-label text-ember">{n}</span>
       <span className="h-px w-10 bg-border" />
       <span className="font-mono-label text-muted-foreground">{title}</span>
-    </div>
+    </motion.div>
   );
 }
