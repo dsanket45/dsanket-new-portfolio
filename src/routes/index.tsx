@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ContactForm } from "@/components/ContactForm";
 
-import { motion, useScroll, useTransform, useSpring } from "motion/react";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PROJECTS as PROJECT_LIST, CATEGORIES, type Project } from "@/data/projects";
 import {
@@ -222,58 +222,172 @@ function Portfolio() {
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState<string>("#top");
+  const [open, setOpen] = useState(false);
+
   useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 12);
+    const on = () => setScrolled(window.scrollY > 40);
     on();
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
   }, []);
 
+  useEffect(() => {
+    const ids = NAV.map(([, h]) => h.slice(1));
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive("#" + e.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) obs.observe(el);
+    });
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <header
-      data-scrolled={scrolled}
-      className={`group/nav fixed left-0 right-0 top-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "border-b border-border/60 bg-background/95 text-foreground shadow-sm"
-          : "border-b border-transparent text-paper"
-      }`}
+    <motion.header
+      initial={false}
+      animate={{ paddingTop: scrolled ? 12 : 20, paddingBottom: scrolled ? 12 : 20 }}
+      transition={{ type: "spring", stiffness: 220, damping: 26 }}
+      className="fixed left-0 right-0 top-0 z-50"
     >
-      <div className="mx-auto flex max-w-[1480px] items-center justify-between px-6 py-4 lg:px-12">
-        <a href="#top" className="flex items-center gap-3" data-cursor="home">
-          <span className={`grid h-9 w-9 place-items-center rounded-full transition-colors ${scrolled ? "bg-foreground text-paper" : "bg-paper text-ink"}`}>
-            <span className="font-display text-lg leading-none">ds</span>
+      <div className="mx-auto flex w-full max-w-[1480px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
+        {/* Brand */}
+        <motion.a
+          href="#top"
+          data-cursor="home"
+          initial={false}
+          animate={{ scale: scrolled ? 0.92 : 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 24 }}
+          className={`flex items-center gap-3 rounded-full backdrop-blur-md transition-colors ${
+            scrolled
+              ? "bg-ink/90 text-paper shadow-lg shadow-ink/20"
+              : "bg-paper/10 text-paper ring-1 ring-paper/20"
+          } px-2 py-1.5 pr-4`}
+        >
+          <span className={`grid h-8 w-8 place-items-center rounded-full ${scrolled ? "bg-ember text-paper" : "bg-paper text-ink"}`}>
+            <span className="font-display text-base leading-none">ds</span>
           </span>
           <span className="hidden flex-col leading-tight sm:flex">
-            <span className="font-display text-base">D Sanket</span>
-            <span className={`font-mono-label ${scrolled ? "text-muted-foreground" : "text-paper/60"}`}>
-              Software Engineer · IND
+            <span className="font-display text-sm">D Sanket</span>
+            <span className={`font-mono-label text-[9px] ${scrolled ? "text-paper/60" : "text-paper/60"}`}>
+              Software · IND
             </span>
           </span>
-        </a>
+        </motion.a>
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {NAV.map(([label, href]) => (
-            <a
-              key={href}
-              href={href}
-              className={`group relative rounded-full px-4 py-2 text-sm transition-colors ${scrolled ? "text-foreground/80 hover:text-foreground" : "text-paper/80 hover:text-paper"}`}
-            >
-              {label}
-              <span className="pointer-events-none absolute inset-x-4 -bottom-0.5 h-px origin-left scale-x-0 bg-ember transition-transform duration-300 group-hover:scale-x-100" />
-            </a>
-          ))}
-        </nav>
-
-        <a
-          href="#contact"
-          data-cursor="say hi"
-          className={`group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm transition-all ${scrolled ? "bg-foreground text-paper hover:bg-ember" : "bg-paper text-ink hover:bg-ember hover:text-paper"}`}
+        {/* Pill nav */}
+        <motion.nav
+          initial={false}
+          animate={{ scale: scrolled ? 0.95 : 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 24 }}
+          className={`hidden md:flex items-center gap-0.5 rounded-full backdrop-blur-xl px-1.5 py-1.5 transition-colors ${
+            scrolled
+              ? "bg-ink/85 ring-1 ring-paper/10 shadow-lg shadow-ink/20"
+              : "bg-paper/10 ring-1 ring-paper/20"
+          }`}
         >
-          Let&apos;s talk
-          <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </a>
+          {NAV.map(([label, href]) => {
+            const isActive = active === href;
+            return (
+              <a
+                key={href}
+                href={href}
+                className={`relative rounded-full px-3.5 py-1.5 text-[13px] transition-colors ${
+                  isActive ? "text-ink" : "text-paper/80 hover:text-paper"
+                }`}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 rounded-full bg-paper shadow-sm"
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  />
+                )}
+                <span className="relative z-10">{label}</span>
+              </a>
+            );
+          })}
+        </motion.nav>
+
+        {/* CTA + mobile toggle */}
+        <div className="flex items-center gap-2">
+          <motion.a
+            href="#contact"
+            data-cursor="say hi"
+            initial={false}
+            animate={{ scale: scrolled ? 0.94 : 1 }}
+            transition={{ type: "spring", stiffness: 260, damping: 24 }}
+            className="group hidden sm:inline-flex items-center gap-2 rounded-full bg-ember px-4 py-2 text-[13px] text-paper shadow-md shadow-ember/30 transition-all hover:bg-ink hover:shadow-lg"
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-paper opacity-70" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-paper" />
+            </span>
+            Let&apos;s talk
+            <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </motion.a>
+
+          <button
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Menu"
+            className={`md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full backdrop-blur-md ${
+              scrolled ? "bg-ink/90 text-paper" : "bg-paper/15 text-paper ring-1 ring-paper/20"
+            }`}
+          >
+            <motion.span
+              animate={{ rotate: open ? 90 : 0 }}
+              className="relative block h-3.5 w-4"
+            >
+              <span className={`absolute left-0 top-0 h-px w-full bg-current transition-transform ${open ? "translate-y-[7px] rotate-45" : ""}`} />
+              <span className={`absolute left-0 top-1/2 h-px w-full bg-current transition-opacity ${open ? "opacity-0" : "opacity-100"}`} />
+              <span className={`absolute bottom-0 left-0 h-px w-full bg-current transition-transform ${open ? "-translate-y-[7px] -rotate-45" : ""}`} />
+            </motion.span>
+          </button>
+        </div>
       </div>
-    </header>
+
+      {/* Mobile sheet */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden mx-4 mt-2 rounded-3xl bg-ink/95 p-3 text-paper shadow-2xl ring-1 ring-paper/10 backdrop-blur-xl"
+          >
+            <div className="flex flex-col">
+              {NAV.map(([label, href]) => (
+                <a
+                  key={href}
+                  href={href}
+                  onClick={() => setOpen(false)}
+                  className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm transition-colors ${
+                    active === href ? "bg-paper/10 text-paper" : "text-paper/70 hover:bg-paper/5"
+                  }`}
+                >
+                  <span>{label}</span>
+                  <ArrowUpRight className="h-4 w-4 opacity-60" />
+                </a>
+              ))}
+              <a
+                href="#contact"
+                onClick={() => setOpen(false)}
+                className="mt-2 inline-flex items-center justify-center gap-2 rounded-2xl bg-ember px-4 py-3 text-sm text-paper"
+              >
+                Let&apos;s talk <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 }
 
