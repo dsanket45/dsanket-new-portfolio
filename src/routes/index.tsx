@@ -661,8 +661,14 @@ function ServiceCard({ s, i }: { s: (typeof SERVICES)[number]; i: number }) {
       data-cursor="explore"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-ember/0 transition-colors duration-500 group-hover:bg-ember/80" />
+      <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-ember/0 blur-3xl transition-all duration-700 group-hover:bg-ember/25" />
       <div className="flex items-start justify-between">
-        <span className="font-mono-label text-ember">{s.n}</span>
+        <div className="flex items-center gap-3">
+          <span className="grid h-11 w-11 place-items-center rounded-2xl border border-border bg-background text-ember transition-all duration-500 group-hover:-rotate-6 group-hover:border-ember/60 group-hover:bg-ember/10">
+            <s.icon className="h-5 w-5" />
+          </span>
+          <span className="font-mono-label text-ember">{s.n}</span>
+        </div>
         <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all duration-500 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-ember" />
       </div>
       <h3 className="mt-8 font-display text-4xl leading-[1.05] sm:text-5xl">
