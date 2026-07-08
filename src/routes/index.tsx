@@ -1785,10 +1785,19 @@ function Quotes() {
 
 function SectionLabel({ n, title }: { n: string; title: string }) {
   return (
-    <div className="flex items-center gap-4">
+    <motion.div
+      initial={{ opacity: 0, x: -10 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="flex items-center gap-4"
+    >
+      <span className="grid h-6 w-6 place-items-center rounded-full bg-ember/12 text-ember">
+        <Sparkles className="h-3 w-3" />
+      </span>
       <span className="font-mono-label text-ember">{n}</span>
       <span className="h-px w-10 bg-border" />
       <span className="font-mono-label text-muted-foreground">{title}</span>
-    </div>
+    </motion.div>
   );
 }
