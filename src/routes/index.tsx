@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ContactForm } from "@/components/ContactForm";
 
-import { motion, useScroll, useTransform, useSpring } from "motion/react";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PROJECTS as PROJECT_LIST, CATEGORIES, type Project } from "@/data/projects";
 import {
