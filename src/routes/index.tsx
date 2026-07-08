@@ -86,10 +86,10 @@ const STACKS = [
 ];
 
 const SERVICES = [
-  { n: "01", t: "Web Development", b: "Production-grade React + Spring Boot apps. Type-safe, tested, deployed.", tags: ["React", "Spring Boot", "Vite"] },
-  { n: "02", t: "UI / UX Design",  b: "Editorial, motion-led interfaces. From wireframe to ready-for-handoff in Figma.", tags: ["Figma", "Motion", "Systems"] },
-  { n: "03", t: "API & Systems",   b: "REST and event-driven APIs, schema design, performance and observability.", tags: ["REST", "MySQL", "Docker"] },
-  { n: "04", t: "Brand & Visuals", b: "Identity, typography, photo retouching — the visual layer for digital products.", tags: ["Identity", "Photo", "Type"] },
+  { n: "01", t: "Web Development", b: "Production-grade React + Spring Boot apps. Type-safe, tested, deployed.", tags: ["React", "Spring Boot", "Vite"], icon: Code2 },
+  { n: "02", t: "UI / UX Design",  b: "Editorial, motion-led interfaces. From wireframe to ready-for-handoff in Figma.", tags: ["Figma", "Motion", "Systems"], icon: Palette },
+  { n: "03", t: "API & Systems",   b: "REST and event-driven APIs, schema design, performance and observability.", tags: ["REST", "MySQL", "Docker"], icon: Layers },
+  { n: "04", t: "Brand & Visuals", b: "Identity, typography, photo retouching — the visual layer for digital products.", tags: ["Identity", "Photo", "Type"], icon: Sparkles },
 ];
 
 // Projects come from shared data so the index list and detail pages stay in sync.
